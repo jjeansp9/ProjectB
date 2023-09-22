@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import kr.jeet.edu.bus.model.data.BusDriveSeqData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.model.data.BusRouteData;
 import kr.jeet.edu.bus.model.request.BusDriveRequest;
+import kr.jeet.edu.bus.model.response.BaseResponse;
 import kr.jeet.edu.bus.model.response.BusDriveResponse;
 import kr.jeet.edu.bus.model.response.BusRouteResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
@@ -38,15 +40,20 @@ public class BusDriveInfoActivity extends BaseActivity {
     private RecyclerView mRecyclerRoute;
     private TextView mTvListEmpty;
 
-    List<BusInfoData> busInfoList;
+    private List<BusInfoData> busInfoList;
 
     private BusRouteListAdapter mAdapter;
     private ArrayList<BusRouteData> mList = new ArrayList<>();
+
+    private String _bcName = "";
+    private int _busCode = -1;
+    private int _busDriveSeq = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_drive_info);
+        mContext = this;
         initView();
         initAppbar();
     }
@@ -61,13 +68,19 @@ public class BusDriveInfoActivity extends BaseActivity {
     }
 
     private void initData(){
+
         busInfoList = DataManager.getInstance().getBusInfoList();
+
+        _bcName = busInfoList.get(0).bcName;
+        _busCode = busInfoList.get(0).busCode;
+        _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
     }
 
     @Override
     void initView() {
         initData();
         mRecyclerRoute = findViewById(R.id.recycler_bus_route);
+        mTvListEmpty = findViewById(R.id.tv_route_list_empty);
 
         setRecycler();
         requestDriveStart();
@@ -80,19 +93,14 @@ public class BusDriveInfoActivity extends BaseActivity {
 
     private void clickArrive(BusRouteData item, int position){
         if (mList.size() - 1 == position){
-
+            requestBusStop(item.bpCode);
         }
     }
 
     private void requestDriveStart(){
 
-        String bcName = busInfoList.get(0).bcName;
-        int busCode = busInfoList.get(0).busCode;
-
-        LogMgr.e(TAG, "bcName: " + bcName);
-
         if(RetrofitClient.getInstance() != null) {
-            RetrofitClient.getApiInterface().getBusRoute(bcName, busCode).enqueue(new Callback<BusRouteResponse>() {
+            RetrofitClient.getApiInterface().getBusRoute(_bcName, _busCode).enqueue(new Callback<BusRouteResponse>() {
                 @Override
                 public void onResponse(Call<BusRouteResponse> call, Response<BusRouteResponse> response) {
                     if(response.isSuccessful()) {
@@ -102,6 +110,8 @@ public class BusDriveInfoActivity extends BaseActivity {
                             List<BusRouteData> getData = response.body().data;
                             if (getData != null){
                                 if (mList != null) mList.addAll(getData);
+
+                                Toast.makeText(mContext, R.string.drive_start, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -119,19 +129,53 @@ public class BusDriveInfoActivity extends BaseActivity {
                     }
 
                     if (mAdapter != null) mAdapter.notifyDataSetChanged();
+                    if (mList != null) mTvListEmpty.setVisibility(mList.isEmpty() ? View.VISIBLE : View.GONE);
                 }
 
                 @Override
                 public void onFailure(Call<BusRouteResponse> call, Throwable t) {
                     LogMgr.e(TAG, "requestDriveStart() onFailure >> " + t.getMessage());
-                    Toast.makeText(mContext, R.string.server_fail, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.bus_start_server_fail, Toast.LENGTH_SHORT).show();
                     if (mAdapter != null) mAdapter.notifyDataSetChanged();
+                    mTvListEmpty.setVisibility(mList.isEmpty() ? View.VISIBLE : View.GONE);
                 }
             });
         }
     }
 
-    private void requestBusStop(){
-        // TODO : 마지막 index를 클릭하면 isFinish를 "Y"로 전달
+    private void requestBusStop(String bpCode){
+
+        String isFinish = "Y";
+
+        if(RetrofitClient.getInstance() != null) {
+            RetrofitClient.getApiInterface().getBusStop(_busDriveSeq, bpCode, isFinish).enqueue(new Callback<BaseResponse>() {
+                @Override
+                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                    if(response.isSuccessful()) {
+                        if(response.body() != null) {
+
+
+                        }
+
+                    } else {
+
+                        if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
+
+                        }else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND){
+
+                        }else{
+
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    LogMgr.e(TAG, "requestBusStop() onFailure >> " + t.getMessage());
+                    Toast.makeText(mContext, R.string.bus_stop_server_fail, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }

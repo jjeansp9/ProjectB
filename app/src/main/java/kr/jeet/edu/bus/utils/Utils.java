@@ -144,7 +144,7 @@ public class Utils {
                 Animation.RELATIVE_TO_SELF, 0.5f  // 중심 축 Y
         );
 
-        scaleAnimation.setDuration(200); // 애니메이션 지속 시간
+        scaleAnimation.setDuration(150); // 애니메이션 지속 시간
         imageView.startAnimation(scaleAnimation);
 
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {

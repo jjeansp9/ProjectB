@@ -84,5 +84,5 @@ public interface RetrofitApi {
 
     // 버스 정류장 도착
     @PATCH("bus/busStop")
-    Call<BaseResponse> getBusStop(@Query("busDriveSeq") int busDriveSeq, @Query("bpCode") int bpCode, @Query("isFinish") String isFinish);
+    Call<BaseResponse> getBusStop(@Query("busDriveSeq") int busDriveSeq, @Query("bpCode") String bpCode, @Query("isFinish") String isFinish);
 }

@@ -99,14 +99,7 @@ public class IntroActivity extends BaseActivity {
                         }
                     } else {
                         PreferenceUtil.setPhoneNumber(mContext, "");
-
-                        if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
-                            Toast.makeText(mContext, R.string.write_phone_impossible, Toast.LENGTH_SHORT).show();
-
-
-                        }else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND){
-                            Toast.makeText(mContext, R.string.write_phone_not_found, Toast.LENGTH_SHORT).show();
-                        }
+                        startLogin();
                     }
 
                     hideProgressDialog();
@@ -116,6 +109,7 @@ public class IntroActivity extends BaseActivity {
                 public void onFailure(Call<BusInfoResponse> call, Throwable t) {
                     LogMgr.e(TAG, "onFailure >> " + t.getMessage());
                     hideProgressDialog();
+                    startLogin();
                 }
             });
         }

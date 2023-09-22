@@ -34,7 +34,12 @@
     <string name="msg_success_to_download"> 파일을 Download 폴더로 다운로드하였습니다.</string>
 
     <string name="btn_start_drive">운행 시작</string>
-    <string name="bus_info_impossible">운행 정보가 잘못되어 운행시작을 할 수 없습니다.</string>
+    <string name="bus_info_impossible">운행 정보가 잘못되어 운행을 시작할 수 없습니다.</string>
     <string name="bus_info_not_found">해당 운행정보가 존재하지 않습니다.</string>
+    <string name="bus_start_server_fail">서버가 원활하지 않아 운행을 시작할 수 없습니다.</string>
     <string name="drive_start">버스 운행을 시작합니다.</string>
+
+    <string name="bus_stop_server_fail">서버가 원활하지 않아 운행을 종료할 수 없습니다.</string>
+    <string name="bus_route_empty">노선 정보가 없습니다.</string>
+
 </resources>

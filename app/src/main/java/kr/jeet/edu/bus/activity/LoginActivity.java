@@ -116,6 +116,7 @@ public class LoginActivity extends BaseActivity {
                 public void onFailure(Call<BusInfoResponse> call, Throwable t) {
                     LogMgr.e(TAG, "onFailure >> " + t.getMessage());
                     hideProgressDialog();
+                    Toast.makeText(mContext, R.string.server_fail, Toast.LENGTH_SHORT).show();
                 }
             });
         }

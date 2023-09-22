@@ -120,7 +120,7 @@ public class MainActivity extends BaseActivity {
                             PreferenceUtil.setDriveSeq(mContext, getData.busDriveSeq); // drive seq
                             startDriveActivity();
 
-                            Toast.makeText(mContext, "버스 운행을 시작합니다.", Toast.LENGTH_SHORT).show();
+
                         }
 
                     } else {
@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onFailure(Call<BusDriveResponse> call, Throwable t) {
                     LogMgr.e(TAG, "requestDriveStart() onFailure >> " + t.getMessage());
-                    Toast.makeText(mContext, R.string.server_fail, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.bus_start_server_fail, Toast.LENGTH_SHORT).show();
                 }
             });
         }
