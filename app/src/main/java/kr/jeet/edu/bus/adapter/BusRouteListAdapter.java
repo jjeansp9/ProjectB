@@ -2,6 +2,7 @@ package kr.jeet.edu.bus.adapter;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -27,12 +28,13 @@ import java.util.ArrayList;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.model.data.BusRouteData;
+import kr.jeet.edu.bus.utils.LogMgr;
 import kr.jeet.edu.bus.utils.Utils;
 import kr.jeet.edu.bus.view.DrawableAlwaysCrossFadeFactory;
 
 public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapter.ViewHolder>{
 
-    public interface ItemClickListener{ public void onItemClick(BusRouteData item, int position); }
+    public interface ItemClickListener{ public void onItemClick(ArrayList<BusRouteData> item, int position); }
 
     private Context mContext;
     private ArrayList<BusRouteData> mList;
@@ -51,34 +53,95 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
         return new ViewHolder(view);
     }
 
+//    @Override
+//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//        BusRouteData item = mList.get(position);
+//
+//        LogMgr.e("clickable: " + item.setClickable);
+//
+//        holder.tvBpName.setText(Utils.getStr(item.bpName));
+//        setImage(holder.cbArrive, holder.imgIconBus, false, position);
+//
+//        if (!item.setClickable){
+//            holder.cbArrive.setOnClickListener(null);
+//            holder.cbArrive.setTextColor(ContextCompat.getColorStateList(mContext, R.color.gray));
+//            holder.cbArrive.setBackgroundResource(R.drawable.bg_arrive_default);
+//        }else{
+//
+//            holder.cbArrive.setOnClickListener(v -> {
+//                setImage(holder.cbArrive, holder.imgIconBus, true, position);
+//                if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList.get(position), position);
+//            });
+//        }
+//    }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         BusRouteData item = mList.get(position);
 
         holder.tvBpName.setText(Utils.getStr(item.bpName));
-        setImage(holder.cbArrive, holder.imgIconBus, false, position);
 
-        holder.cbArrive.setOnClickListener(v -> {
-            setImage(holder.cbArrive, holder.imgIconBus, true, position);
-            if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList.get(position), position);
-        });
+        if (!item.setClickable) {
+
+            LogMgr.e("EVENT1");
+            holder.cbArrive.setOnClickListener(v -> {if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList, position);});
+            holder.cbArrive.setTextColor(ContextCompat.getColorStateList(mContext, R.color.gray));
+            holder.cbArrive.setBackgroundResource(R.drawable.bg_arrive_default);
+            holder.cbArrive.setChecked(true);
+
+        } else {
+            holder.cbArrive.setOnClickListener(v -> {
+                LogMgr.e("EVENT2", item.setClickable + "" + position + ", " + item.isSuccess);
+                if (item.isSuccess) {
+
+                    setImage(holder.cbArrive, holder.imgIconBus, true, item);
+                } else {
+
+                    holder.cbArrive.setOnClickListener(null);
+                    holder.cbArrive.setTextColor(ContextCompat.getColorStateList(mContext, R.color.gray));
+                    holder.cbArrive.setBackgroundResource(R.drawable.bg_arrive_default);
+                    holder.cbArrive.setChecked(true);
+                }
+
+                if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList, position);
+            });
+        }
+
+        setImage(holder.cbArrive, holder.imgIconBus, false, item);
     }
 
-    private void setImage(CheckBox cb, ImageView img, boolean isChanged, int position){
-        if (isChanged){
+    @SuppressLint("ResourceType")
+    private void setImage(CheckBox cb, ImageView img, boolean isChanged, BusRouteData item){
+        if (isChanged) {
+            if (cb.isChecked()) setCheckImg(cb, img);
+            else setDefaultImg(cb, img, R.drawable.selector_tv_arrive_check);
+
+        } else {
             if (cb.isChecked()) {
-                Utils.animateImageChange(mContext, img, R.drawable.icon_bus_arrive);
-                cb.setOnClickListener(null);
-                cb.setBackgroundResource(R.drawable.bg_arrive_checked);
-                cb.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+                if (item.isSuccess) setCheckImg(cb, img);
+                else if (!item.setClickable) Glide.with(mContext).load(R.drawable.icon_bus).into(img);
 
             } else {
-                Utils.animateImageChange(mContext, img, R.drawable.icon_bus);
+                if (item.isSuccess) setCheckImg(cb, img);
+                else setDefaultImg(cb, img, R.drawable.selector_tv_arrive_check);
             }
-        }else{
-            if (cb.isChecked()) Glide.with(mContext).load(R.drawable.icon_bus_arrive).into(img);
-            else Glide.with(mContext).load(R.drawable.icon_bus).into(img);
         }
+    }
+
+    private void setCheckImg(CheckBox cb, ImageView img){
+        //Utils.animateImageChange(mContext, img, R.drawable.icon_bus_arrive);
+        Glide.with(mContext).load(R.drawable.icon_bus_arrive).into(img);
+        cb.setChecked(false);
+        cb.setOnClickListener(null);
+        cb.setBackgroundResource(R.drawable.bg_arrive_checked);
+        cb.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+    }
+
+    private void setDefaultImg(CheckBox cb, ImageView img, int redId){
+        //Utils.animateImageChange(mContext, img, R.drawable.icon_bus);
+        Glide.with(mContext).load(R.drawable.icon_bus).into(img);
+        cb.setBackgroundResource(R.drawable.selector_arrive_check);
+        cb.setTextColor(ContextCompat.getColor(mContext, redId));
     }
 
     @Override

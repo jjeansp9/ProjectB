@@ -90,7 +90,8 @@
                 android:layout_height="24dp"
                 android:background="@drawable/selector_bt_login_check"
                 android:button="@null"
-                android:clickable="false"/>
+                android:clickable="false"
+                android:checked="true"/>
 
             <TextView
                 android:id="@+id/checkbox_text"

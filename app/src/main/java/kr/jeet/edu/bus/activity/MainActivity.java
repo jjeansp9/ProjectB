@@ -11,13 +11,17 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 
 import java.io.IOException;
 import java.util.List;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.common.DataManager;
+import kr.jeet.edu.bus.common.IntentParams;
 import kr.jeet.edu.bus.model.data.ACAData;
 import kr.jeet.edu.bus.model.data.BusDriveSeqData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
@@ -39,7 +43,10 @@ public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
 
     private TextView tvPhoneNum, tvBcName, tvBusName, tvBusCode, tvDate;
+    private AppCompatButton btnStartDrive;
     List<BusInfoData> busInfoList;
+
+    private int _busDriveSeq = 0;
 
     private final int CMD_GET_ACALIST = 1;  // ACA정보 가져오기
 
@@ -48,11 +55,29 @@ public class MainActivity extends BaseActivity {
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what) {
                 case CMD_GET_ACALIST :
-                    requestACAList();
+                    //requestACAList();
                     break;
             }
         }
     };
+
+    ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        LogMgr.w("result =" + result);
+        Intent intent = result.getData();
+        if(result.getResultCode() != RESULT_CANCELED) {
+
+            boolean finished = false;
+
+            if(intent != null && intent.hasExtra(IntentParams.PARAM_DRIVE_FINISH)) {
+                finished = intent.getBooleanExtra(IntentParams.PARAM_DRIVE_FINISH, false);
+
+                if(finished) {
+                    _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
+                    btnStartDrive.setText(getString(R.string.btn_start_drive));
+                }
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,15 +100,17 @@ public class MainActivity extends BaseActivity {
     private void initData(){
 
         busInfoList = DataManager.getInstance().getBusInfoList();
+        _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
 
-        mHandler.sendEmptyMessage(CMD_GET_ACALIST);
+        //mHandler.sendEmptyMessage(CMD_GET_ACALIST);
     }
 
     @Override
     void initView() {
         initData();
 
-        findViewById(R.id.btn_start_drive).setOnClickListener(this);
+        btnStartDrive = findViewById(R.id.btn_start_drive);
+        btnStartDrive.setOnClickListener(this);
 
         tvPhoneNum = findViewById(R.id.tv_phone_number);
         tvBusName = findViewById(R.id.tv_bus_name);
@@ -92,6 +119,9 @@ public class MainActivity extends BaseActivity {
         tvDate.setText(Utils.currentDate("yyyy-MM-dd (E)"));
         tvPhoneNum.setText(Utils.getStr(busInfoList.get(0).busPhoneNumber));
         tvBusName.setText(Utils.getStr(busInfoList.get(0).busName));
+
+        if (_busDriveSeq != 0) btnStartDrive.setText(getString(R.string.btn_go_driving));
+        else btnStartDrive.setText(getString(R.string.btn_start_drive));
     }
 
     @Override
@@ -99,7 +129,9 @@ public class MainActivity extends BaseActivity {
         super.onClick(v);
         switch (v.getId()){
             case R.id.btn_start_drive:
-                requestDriveStart();
+                LogMgr.e(TAG, _busDriveSeq+"");
+                if (_busDriveSeq != 0) startDriveActivity();
+                else requestDriveStart();
                 break;
         }
     }
@@ -118,9 +150,10 @@ public class MainActivity extends BaseActivity {
                         if(response.body() != null) {
                             BusDriveSeqData getData = response.body().data;
                             PreferenceUtil.setDriveSeq(mContext, getData.busDriveSeq); // drive seq
+                            _busDriveSeq = getData.busDriveSeq;
                             startDriveActivity();
-
-
+                            Toast.makeText(mContext, R.string.drive_start, Toast.LENGTH_SHORT).show();
+                            btnStartDrive.setText(getString(R.string.btn_go_driving));
                         }
 
                     } else {
@@ -146,36 +179,8 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    // 캠퍼스 목록 조회
-    private void requestACAList(){
-        if(RetrofitClient.getInstance() != null) {
-            RetrofitClient.getApiInterface().getACAList().enqueue(new Callback<GetACAListResponse>() {
-                @Override
-                public void onResponse(Call<GetACAListResponse> call, Response<GetACAListResponse> response) {
-                    if(response.isSuccessful()) {
-                        if(response.body() != null) {
-                            List<ACAData> list = response.body().data;
-                            DataManager.getInstance().initACAListMap(list);
-                        }
-                    } else {
-                        try { LogMgr.e(TAG, "requestACAList() errBody : " + response.errorBody().string()); }
-                        catch (IOException e) {}
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<GetACAListResponse> call, Throwable t) {
-                    LogMgr.e(TAG, "requestACAList() onFailure >> " + t.getMessage());
-                }
-            });
-        }
-    }
-
     private void startDriveActivity(){
-//        Intent intent = new Intent(mContext, BusDriveInfoActivity.class);
-//        startActivity(intent);
-
-        startActivity(new Intent(mContext, BusDriveInfoActivity.class));
+        resultLauncher.launch(new Intent(mContext, BusDriveInfoActivity.class));
     }
 
     @Override
