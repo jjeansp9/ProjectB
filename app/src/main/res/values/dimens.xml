@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="layout_margin_xxxxsmall">2dp</dimen>
+    <dimen name="layout_margin_xxxsmall">4dp</dimen>
+    <dimen name="layout_margin_xxsmall">8dp</dimen>
+    <dimen name="layout_margin_xsmall">12dp</dimen>
+    <dimen name="layout_margin_small">16dp</dimen>
+    <dimen name="layout_margin">20dp</dimen>
+    <dimen name="layout_margin_large">24dp</dimen>
+    <dimen name="layout_margin_xlarge">28dp</dimen>
+    <dimen name="layout_margin_xxlarge">32dp</dimen>
+    <dimen name="layout_margin_xxxlarge">36dp</dimen>
+    <dimen name="layout_margin_xxxxlarge">40dp</dimen>
+    <dimen name="layout_margin_ultralarge">60dp</dimen>
+
+    <dimen name="font_size_xxxsmall">8dp</dimen>
+    <dimen name="font_size_xxsmall">10dp</dimen>
+    <dimen name="font_size_xsmall">12dp</dimen>
+    <dimen name="font_size_small">14dp</dimen>
+    <dimen name="font_size">16dp</dimen>
+    <dimen name="font_size_large">18dp</dimen>
+    <dimen name="font_size_xlarge">20dp</dimen>
+    <dimen name="font_size_xxlarge">22dp</dimen>
+    <dimen name="font_size_xxxlarge">24dp</dimen>
+
+    <dimen name="editbox_padding">12dp</dimen>
+
+    <dimen name="spinner_divider_height">0.4dp</dimen>
+
+    <dimen name="usergubun_badge_corner">4dp</dimen>
+    <dimen name="usergubun_badge_padding_horizontal">10dp</dimen>
+    <dimen name="usergubun_badge_padding_vertical">1dp</dimen>
+
+    <dimen name="image_pallet_size">108dp</dimen>
+    <dimen name="file_icon_size">20dp</dimen>
+
+    <dimen name="line_red_margin_horizontal">20dp</dimen>
+    <dimen name="line_red_margin_height">2dp</dimen>
+
+    <dimen name="calendar_arrow_size">40dp</dimen>
+</resources>
