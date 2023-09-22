@@ -1,17 +1,14 @@
 package kr.jeet.edu.bus.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.skydoves.powerspinner.PowerSpinnerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +17,9 @@ import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.adapter.BusRouteListAdapter;
 import kr.jeet.edu.bus.common.DataManager;
 import kr.jeet.edu.bus.common.IntentParams;
-import kr.jeet.edu.bus.model.data.BusDriveSeqData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.model.data.BusRouteData;
-import kr.jeet.edu.bus.model.request.BusDriveRequest;
 import kr.jeet.edu.bus.model.response.BaseResponse;
-import kr.jeet.edu.bus.model.response.BusDriveResponse;
 import kr.jeet.edu.bus.model.response.BusRouteResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
 import kr.jeet.edu.bus.server.RetrofitClient;
@@ -41,7 +35,8 @@ public class BusDriveInfoActivity extends BaseActivity {
     private static final String TAG = "BusDriveInfoActivity";
 
     private RecyclerView mRecyclerRoute;
-    private TextView mTvListEmpty;
+    private TextView mTvListEmpty, mTvBcName, mTvBusInfo;
+    private RelativeLayout mProgress;
 
     private List<BusInfoData> busInfoList;
 
@@ -51,6 +46,7 @@ public class BusDriveInfoActivity extends BaseActivity {
     private String _bcName = "";
     private int _busCode = -1;
     private int _busDriveSeq = -1;
+    private String _phoneNumber = "";
 
     private static final String DRIVE = "Y";
     private static final String NOT_DRIVE = "N";
@@ -80,6 +76,7 @@ public class BusDriveInfoActivity extends BaseActivity {
         _bcName = busInfoList.get(0).bcName;
         _busCode = busInfoList.get(0).busCode;
         _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
+        _phoneNumber = PreferenceUtil.getPhoneNumber(mContext);
     }
 
     @Override
@@ -87,6 +84,13 @@ public class BusDriveInfoActivity extends BaseActivity {
         initData();
         mRecyclerRoute = findViewById(R.id.recycler_bus_route);
         mTvListEmpty = findViewById(R.id.tv_route_list_empty);
+        mTvBcName = findViewById(R.id.tv_bc_name);
+        mTvBusInfo = findViewById(R.id.tv_bus_info);
+
+        mProgress = findViewById(R.id.progress);
+
+        mTvBcName.setText(_bcName);
+        mTvBusInfo.setText(_phoneNumber);
 
         setRecycler();
         requestDriveStart();
@@ -200,6 +204,7 @@ public class BusDriveInfoActivity extends BaseActivity {
                     if (mAdapter != null) mAdapter.notifyDataSetChanged();
                     mTvListEmpty.setVisibility(mList.isEmpty() ? View.VISIBLE : View.GONE);
                     hideProgressDialog();
+
                 }
             });
         }
@@ -207,7 +212,8 @@ public class BusDriveInfoActivity extends BaseActivity {
 
     private void requestBusStop(ArrayList<BusRouteData> item, int position, String isDrive){
 
-        showProgressDialog();
+        //showProgressDialog();
+        mProgress.setVisibility(View.VISIBLE);
 
         String bpCode = item.get(position).bpCode;
 
@@ -252,14 +258,16 @@ public class BusDriveInfoActivity extends BaseActivity {
 
                         }
                     }
-                    hideProgressDialog();
+                    //hideProgressDialog();
+                    mProgress.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onFailure(Call<BaseResponse> call, Throwable t) {
                     LogMgr.e(TAG, "requestBusStop() onFailure >> " + t.getMessage());
                     Toast.makeText(mContext, R.string.bus_stop_server_fail, Toast.LENGTH_SHORT).show();
-                    hideProgressDialog();
+                    //hideProgressDialog();
+                    mProgress.setVisibility(View.GONE);
                 }
             });
         }

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">지트 차량기사</string>
 
     <string name="loading">로딩중</string>
@@ -34,7 +34,7 @@
     <string name="msg_success_to_download"> 파일을 Download 폴더로 다운로드하였습니다.</string>
 
     <string name="btn_start_drive">운행 시작</string>
-    <string name="btn_go_driving">운행중</string>
+    <string name="btn_go_driving">운행중...</string>
     <string name="bus_info_impossible">운행 정보가 잘못되어 운행을 시작할 수 없습니다.</string>
     <string name="bus_info_not_found">해당 운행정보가 존재하지 않습니다.</string>
     <string name="bus_start_server_fail">서버가 원활하지 않아 운행을 시작할 수 없습니다.</string>

@@ -38,7 +38,7 @@
         android:id="@+id/tv_bp_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:textColor="@color/black"
         android:textSize="@dimen/font_size_large"

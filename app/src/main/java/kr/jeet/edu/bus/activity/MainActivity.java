@@ -63,9 +63,8 @@ public class MainActivity extends BaseActivity {
 
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         LogMgr.w("result =" + result);
-        Intent intent = result.getData();
         if(result.getResultCode() != RESULT_CANCELED) {
-
+            Intent intent = result.getData();
             boolean finished = false;
 
             if(intent != null && intent.hasExtra(IntentParams.PARAM_DRIVE_FINISH)) {
@@ -117,7 +116,7 @@ public class MainActivity extends BaseActivity {
         tvDate = findViewById(R.id.tv_date);
 
         tvDate.setText(Utils.currentDate("yyyy-MM-dd (E)"));
-        tvPhoneNum.setText(Utils.getStr(busInfoList.get(0).busPhoneNumber));
+        //tvPhoneNum.setText(Utils.getStr(busInfoList.get(0).busPhoneNumber));
         tvBusName.setText(Utils.getStr(busInfoList.get(0).busName));
 
         if (_busDriveSeq != 0) btnStartDrive.setText(getString(R.string.btn_go_driving));

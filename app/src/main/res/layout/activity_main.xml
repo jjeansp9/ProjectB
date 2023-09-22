@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@color/white"
+                android:background="@drawable/bg_white_box"
                 android:layout_marginTop="16dp"
                 android:paddingHorizontal="@dimen/layout_margin"
                 android:paddingVertical="16dp">
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:background="@color/white"
+                android:background="@drawable/bg_white_box"
                 android:paddingHorizontal="@dimen/layout_margin"
                 android:paddingVertical="16dp">
 
@@ -68,7 +68,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="운행 일정"
                     android:textColor="@color/font_color_default"
-                    android:textSize="@dimen/font_size_large"/>
+                    android:textSize="@dimen/font_size_large"
+                    android:textStyle="bold"/>
 
                 <LinearLayout
                     android:id="@+id/layout_calendar"
