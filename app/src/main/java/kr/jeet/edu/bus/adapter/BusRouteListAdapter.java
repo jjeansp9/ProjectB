@@ -62,7 +62,8 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
         if (!item.setClickable) {
 
             LogMgr.e("EVENT1", position+"");
-            Glide.with(mContext).load(R.drawable.icon_bus_yet).into(holder.imgIconBus);
+            if (position == mList.size() - 1) Glide.with(mContext).load(R.drawable.icon_bus_garage_yet).into(holder.imgIconBus);
+            else Glide.with(mContext).load(R.drawable.icon_bus_yet).into(holder.imgIconBus);
             holder.cbArrive.setOnClickListener(v -> {if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList, position);});
             holder.cbArrive.setTextColor(ContextCompat.getColorStateList(mContext, R.color.gray));
             holder.cbArrive.setBackgroundResource(R.drawable.bg_arrive_default);
@@ -71,24 +72,23 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
         } else {
             holder.cbArrive.setOnClickListener(v -> {
                 LogMgr.e("EVENT2", item.setClickable + "" + position + ", " + item.isSuccess);
-
-                setImage(holder.cbArrive, holder.imgIconBus, item);
+                setImage(holder.cbArrive, holder.imgIconBus, item, position);
                 if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList, position);
             });
-
-            setImage(holder.cbArrive, holder.imgIconBus, item);
+            setImage(holder.cbArrive, holder.imgIconBus, item, position);
         }
     }
 
     @SuppressLint("ResourceType")
-    private void setImage(CheckBox cb, ImageView img, BusRouteData item){
-        if (item.isSuccess) setCheckImg(cb, img);
+    private void setImage(CheckBox cb, ImageView img, BusRouteData item, int position){
+        if (item.isSuccess) setCheckImg(cb, img, position);
         else setDefaultImg(cb, img, R.drawable.selector_tv_arrive_check);
     }
 
-    private void setCheckImg(CheckBox cb, ImageView img){
+    private void setCheckImg(CheckBox cb, ImageView img, int position){
         //Utils.animateImageChange(mContext, img, R.drawable.icon_bus_arrive);
-        Glide.with(mContext).load(R.drawable.icon_bus_arrive).into(img);
+        if (position == 0) Glide.with(mContext).load(R.drawable.icon_bus_garage_arrive).into(img);
+        else Glide.with(mContext).load(R.drawable.icon_bus_arrive).into(img);
         cb.setChecked(false);
         cb.setOnClickListener(null);
         cb.setBackgroundResource(R.drawable.bg_arrive_checked);
