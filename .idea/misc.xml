@@ -15,6 +15,7 @@
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable-xhdpi/bg_edittext_focused.xml" value="0.228" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable-xhdpi/selector_bt_agree.xml" value="0.228" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable-xxxhdpi/selector_arrive_check.xml" value="0.204" />
+        <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/bg_app_version_update.xml" value="0.22" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/bg_arrive_checked.xml" value="0.204" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/bg_arrive_default.xml" value="0.204" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/bg_brf_state_close.xml" value="0.232" />
@@ -28,6 +29,8 @@
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/bg_edittext_login_default.xml" value="0.228" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/bg_edittext_login_focused.xml" value="0.204" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/bg_main_box.xml" value="0.22" />
+        <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/bg_set_click_event_body.xml" value="0.22" />
+        <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/bg_setting_layout.xml" value="0.22" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/custom_progress_color.xml" value="0.22" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/ic_vector_close.xml" value="0.232" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/ic_vector_download.xml" value="0.232" />
@@ -39,6 +42,7 @@
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/selector_bg_calender.xml" value="0.232" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/selector_bt_login_check.xml" value="0.228" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/selector_bt_login_manager.xml" value="0.228" />
+        <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/selector_bt_ubderbox.xml" value="0.22" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/selector_icon_back.xml" value="0.232" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/selector_month_back.xml" value="0.232" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/drawable/selector_spinner_normal.xml" value="0.232" />
@@ -51,6 +55,8 @@
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/layout/activity_main.xml" value="0.3346846846846847" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/layout/activity_menu_board_detail.xml" value="0.3346846846846847" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/layout/activity_photo_view.xml" value="0.3346846846846847" />
+        <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/layout/activity_privacy_see_content.xml" value="0.32207207207207206" />
+        <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/layout/activity_settings.xml" value="0.3346846846846847" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/layout/custom_dialog.xml" value="0.3799814643188137" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/layout/dialog_progressbar.xml" value="0.38697916666666665" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/layout/fragment_announcement.xml" value="0.3346846846846847" />

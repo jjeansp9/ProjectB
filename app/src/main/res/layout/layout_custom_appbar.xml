@@ -43,7 +43,7 @@
             android:layout_centerVertical="true"
             android:stateListAnimator="@xml/animate_button_push"
             android:text="운행취소"
-            android:textColor="@color/red_sub"
+            android:textColor="@color/red"
             android:textSize="@dimen/font_size_large"
             android:visibility="gone"/>
     </com.google.android.material.appbar.MaterialToolbar>

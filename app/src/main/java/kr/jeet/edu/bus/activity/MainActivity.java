@@ -190,8 +190,8 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_setting:
-//                Intent intent = new Intent(mContext, SettingsActivity.class);
-//                resultLauncher.launch(intent);
+                Intent intent = new Intent(mContext, SettingsActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

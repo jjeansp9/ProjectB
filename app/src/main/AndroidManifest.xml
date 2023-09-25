@@ -19,6 +19,18 @@
         tools:replace="android:allowBackup"
         >
         <activity
+            android:name=".activity.PrivacySeeContentActivity"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".activity.BusDriveInfoActivity"
             android:configChanges="smallestScreenSize|screenSize|screenLayout"
             android:exported="false"

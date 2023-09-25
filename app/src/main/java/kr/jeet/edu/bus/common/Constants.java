@@ -1,5 +1,7 @@
 package kr.jeet.edu.bus.common;
 
+import kr.jeet.edu.bus.server.RetrofitApi;
+
 public class Constants {
 
     // 로그인 400 BAD_REQUEST MSG
@@ -27,4 +29,7 @@ public class Constants {
 
     public static final int PHONE_NUM_LENGTH_1 = 11; // 휴대폰번호 length
     public static final int PHONE_NUM_LENGTH_2 = 10; // 휴대폰번호2 length
+
+    public final static String POLICY_SERVICE = RetrofitApi.SERVER_BASE_URL+"web/api/policy/service"; // 이용약관
+    public final static String POLICY_PRIVACY = RetrofitApi.SERVER_BASE_URL+"web/api/policy/privacy"; // 개인정보취급방침
 }

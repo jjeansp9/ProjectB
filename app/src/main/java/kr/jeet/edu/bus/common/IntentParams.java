@@ -9,5 +9,5 @@ public class IntentParams {
 
     public final static String PARAM_DRIVE_FINISH = "driveFinish";  // 운행 종료
 
-
+    public final static String PARAM_WEB_VIEW_URL = "webViewUrl";  // 웹뷰에서 로드할 url
 }

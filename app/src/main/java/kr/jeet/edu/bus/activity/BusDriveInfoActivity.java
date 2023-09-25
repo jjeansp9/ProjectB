@@ -1,24 +1,33 @@
 package kr.jeet.edu.bus.activity;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +57,7 @@ public class BusDriveInfoActivity extends BaseActivity {
     private RecyclerView mRecyclerRoute;
     private TextView mTvListEmpty, mTvBcName, mTvBusInfo;
     private RelativeLayout mProgress;
+    private AppBarLayout appbar;
 
     private List<BusInfoData> busInfoList;
 
@@ -98,6 +108,7 @@ public class BusDriveInfoActivity extends BaseActivity {
         mTvListEmpty = findViewById(R.id.tv_route_list_empty);
         mTvBcName = findViewById(R.id.tv_bc_name);
         mTvBusInfo = findViewById(R.id.tv_bus_info);
+        appbar = findViewById(R.id.appbar);
 
         mProgress = findViewById(R.id.progress);
 
@@ -109,6 +120,7 @@ public class BusDriveInfoActivity extends BaseActivity {
     }
 
     private void setRecycler(){
+
         mAdapter = new BusRouteListAdapter(mContext, mList, this::clickArrive);
         mRecyclerRoute.setAdapter(mAdapter);
     }
@@ -201,6 +213,15 @@ public class BusDriveInfoActivity extends BaseActivity {
         }
     }
 
+    private void scrollToPosition() {
+        mRecyclerRoute.post(() -> {
+            if (!mRecyclerRoute.hasNestedScrollingParent(ViewCompat.TYPE_NON_TOUCH)) {
+                mRecyclerRoute.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_NON_TOUCH);
+            }
+            mRecyclerRoute.smoothScrollToPosition(mList.size());
+        });
+    }
+
     // 정류장 도착
     private void requestBusStop(ArrayList<BusRouteData> item, int position, String isDrive){
 
@@ -252,6 +273,8 @@ public class BusDriveInfoActivity extends BaseActivity {
                     }
                     //hideProgressDialog();
                     mProgress.setVisibility(View.GONE);
+
+                    scrollToPosition();
                 }
 
                 @Override
@@ -260,6 +283,8 @@ public class BusDriveInfoActivity extends BaseActivity {
                     Toast.makeText(mContext, R.string.bus_stop_server_fail, Toast.LENGTH_SHORT).show();
                     //hideProgressDialog();
                     mProgress.setVisibility(View.GONE);
+
+                    scrollToPosition();
                 }
             });
         }

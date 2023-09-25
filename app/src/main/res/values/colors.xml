@@ -50,4 +50,7 @@
     <color name="sunday_other_month">#FFD3D3</color>
     <color name="saturday">#3999FF</color>
     <color name="saturday_other_month">#CFECFF</color>
+
+    <color name="app_version_update_badge">#FFC800</color>
+    <color name="settings_layout_stroke">#D5D5D5</color>
 </resources>
