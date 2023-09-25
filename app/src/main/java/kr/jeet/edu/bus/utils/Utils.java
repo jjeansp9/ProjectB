@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.demogorgorn.monthpicker.MonthPickerDialog;
 
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -167,5 +168,28 @@ public class Utils {
                 // 애니메이션 반복 시 처리할 작업
             }
         });
+    }
+
+    /**
+     * number format
+     * */
+    public static String formatNum(String num){
+        String number = "";
+        if (num.equals("")){
+            number = "010-000-1234";
+
+        }else if (num.length() == Constants.PHONE_NUM_LENGTH_1){ // 휴대폰번호
+            number = MessageFormat.format("{0}-{1}-{2}",
+                    num.substring(0, 3),
+                    num.substring(3, 7),
+                    num.substring(7));
+        }else if (num.length() == Constants.PHONE_NUM_LENGTH_2){ // 휴대폰번호2
+            number = MessageFormat.format("{0}-{1}-{2}",
+                    num.substring(0, 3),
+                    num.substring(3, 6),
+                    num.substring(6));
+        }
+
+        return number;
     }
 }

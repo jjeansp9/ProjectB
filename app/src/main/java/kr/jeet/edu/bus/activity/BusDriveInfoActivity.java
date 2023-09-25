@@ -1,9 +1,19 @@
 package kr.jeet.edu.bus.activity;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -25,6 +35,7 @@ import kr.jeet.edu.bus.server.RetrofitApi;
 import kr.jeet.edu.bus.server.RetrofitClient;
 import kr.jeet.edu.bus.utils.LogMgr;
 import kr.jeet.edu.bus.utils.PreferenceUtil;
+import kr.jeet.edu.bus.utils.Utils;
 import kr.jeet.edu.bus.view.CustomAppbarLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,6 +78,7 @@ public class BusDriveInfoActivity extends BaseActivity {
         setSupportActionBar(customAppbar.getToolbar());
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.selector_icon_back);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //customAppbar.setTvRight(getString(R.string.menu_item_drive_cancel), v -> requestDriveCancel());
     }
 
     private void initData(){
@@ -90,57 +102,36 @@ public class BusDriveInfoActivity extends BaseActivity {
         mProgress = findViewById(R.id.progress);
 
         mTvBcName.setText(_bcName);
-        mTvBusInfo.setText(_phoneNumber);
+        mTvBusInfo.setText(Utils.formatNum(_phoneNumber));
 
         setRecycler();
-        requestDriveStart();
+        requestRouteList();
     }
-    BusRouteData item;
-    BusRouteData item2;
-    BusRouteData item3;
+
     private void setRecycler(){
-
-//        item = new BusRouteData();
-//        item.bpName = "aaaaaa1";
-//        item.bpCode = "aaaaaa2";
-//        item.isArrive = "N";
-//        item.isSuccess = true;
-//        item.setClickable = false;
-//
-//        item2 = new BusRouteData();
-//        item2.bpName = "bbbbbbb1";
-//        item2.bpCode = "bbbbbbb2";
-//        item2.isArrive = "N";
-//        item2.isSuccess = true;
-//        item2.setClickable = false;
-//
-//        item3 = new BusRouteData();
-//        item3.bpName = "aaaaaa1";
-//        item3.bpCode = "aaaaaa2";
-//        item3.isArrive = "N";
-//        item3.isSuccess = true;
-//        item3.setClickable = true;
-//
-//        mList.add(item3);
-//        mList.add(item2);
-//        mList.add(item);
-//        mList.add(item);
-//        mList.add(item);
-
         mAdapter = new BusRouteListAdapter(mContext, mList, this::clickArrive);
         mRecyclerRoute.setAdapter(mAdapter);
     }
 
     private void clickArrive(ArrayList<BusRouteData> item, int position){
+
         if (mList.get(position).setClickable){
-            if (mList.size() - 1 == position) requestBusStop(item, position, NOT_DRIVE);
-            else requestBusStop(item, position, DRIVE);
+            showMessageDialog(getString(R.string.dialog_title_alarm), getString(R.string.dialog_drive_arrive_confirm, item.get(position).bpName), ok -> {
+                if (mList.size() - 1 == position) requestBusStop(item, position, NOT_DRIVE);
+                else requestBusStop(item, position, DRIVE);
+                hideMessageDialog();
+            }, cancel -> {
+                hideMessageDialog();
+                return;
+            });
+
         }else{
             Toast.makeText(mContext, R.string.bus_route_impossible_click, Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void requestDriveStart(){
+    // 버스 노선조회
+    private void requestRouteList(){
 
         showProgressDialog();
 
@@ -199,7 +190,7 @@ public class BusDriveInfoActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(Call<BusRouteResponse> call, Throwable t) {
-                    LogMgr.e(TAG, "requestDriveStart() onFailure >> " + t.getMessage());
+                    LogMgr.e(TAG, "request() onFailure >> " + t.getMessage());
                     Toast.makeText(mContext, R.string.bus_start_server_fail, Toast.LENGTH_SHORT).show();
                     if (mAdapter != null) mAdapter.notifyDataSetChanged();
                     mTvListEmpty.setVisibility(mList.isEmpty() ? View.VISIBLE : View.GONE);
@@ -210,6 +201,7 @@ public class BusDriveInfoActivity extends BaseActivity {
         }
     }
 
+    // 정류장 도착
     private void requestBusStop(ArrayList<BusRouteData> item, int position, String isDrive){
 
         //showProgressDialog();
@@ -272,4 +264,35 @@ public class BusDriveInfoActivity extends BaseActivity {
             });
         }
     }
+
+    private void requestDriveCancel(){
+
+    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_bus_info, menu);
+//        int positionOfMenuItem = 0;
+//        try {
+//            MenuItem item = menu.getItem(positionOfMenuItem);
+//            SpannableString span = new SpannableString(item.getTitle());
+//            span.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.red)), 0, span.length(), 0);
+//            span.setSpan(new StyleSpan(Typeface.NORMAL), 0, span.length(), 0);
+//
+//            int sizeInPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, mContext.getResources().getDisplayMetrics());
+//            span.setSpan(new AbsoluteSizeSpan(sizeInPx), 0, span.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//
+//            item.setTitle(span);
+//        }catch(Exception ex){}
+//        return (super.onCreateOptionsMenu(menu));
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_drive_cancel:
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ public class CustomAppbarLayout extends AppBarLayout {
     private MaterialToolbar _toolbar;
     private ImageView _ivLogo;
     private ImageButton _btnBack;
+    private TextView _tvRight;
     public CustomAppbarLayout(@NonNull Context context) {
         super(context);
         _context = context;
@@ -43,6 +45,7 @@ public class CustomAppbarLayout extends AppBarLayout {
         _toolbar = view.findViewById(R.id.toolbar);
         _ivLogo = view.findViewById(R.id.iv_logo);
         _btnBack = view.findViewById(R.id.btn_back);
+        _tvRight = view.findViewById(R.id.tv_right);
     }
     public MaterialToolbar getToolbar() {
         return _toolbar;
@@ -80,6 +83,14 @@ public class CustomAppbarLayout extends AppBarLayout {
     public void setTitle(String title) {
         if(_toolbar != null) {
             _toolbar.setTitle(title);
+        }
+    }
+
+    public void setTvRight(String str, OnClickListener listener){
+        if (_tvRight != null){
+            _btnBack.setVisibility(View.VISIBLE);
+            _tvRight.setText(str);
+            _tvRight.setOnClickListener(listener);
         }
     }
 

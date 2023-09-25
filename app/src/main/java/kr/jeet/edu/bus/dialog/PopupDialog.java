@@ -5,30 +5,31 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.w3c.dom.Text;
+
 import kr.jeet.edu.bus.R;
+import kr.jeet.edu.bus.utils.LogMgr;
+import kr.jeet.edu.bus.utils.Utils;
 
 public class PopupDialog extends Dialog {
 
     private Context context;
     private TextView titleTv, contentTv, noteTv, notMatchTv;
     private EditText editText;
-    private Button cancelBtn, okBtn;
-    //checkbox
-    private LinearLayout layoutCheckbox;
-    private CheckBox checkBox;
-    private TextView tvCheckBoxTitle;
+    //private Button cancelBtn, okBtn;
+    private RelativeLayout cancelBtn, okBtn;
     private ViewGroup titleLayout;
 
     public PopupDialog(@NonNull Context context) {
@@ -65,11 +66,10 @@ public class PopupDialog extends Dialog {
         editText = (EditText) findViewById(R.id.edit);
         noteTv = (TextView) findViewById(R.id.note);
         notMatchTv = (TextView) findViewById(R.id.not_match);
-        cancelBtn = (Button) findViewById(R.id.cancelBtn);
-        okBtn = (Button) findViewById(R.id.okBtn);
-//        layoutCheckbox = findViewById(R.id.layout_checkbox);
-//        checkBox = findViewById(R.id.checkbox);
-//        tvCheckBoxTitle = findViewById(R.id.tv_checkbox_title);
+//        cancelBtn = (Button) findViewById(R.id.cancelBtn);
+//        okBtn = (Button) findViewById(R.id.okBtn);
+        cancelBtn = (RelativeLayout) findViewById(R.id.cancelBtn);
+        okBtn = (RelativeLayout) findViewById(R.id.okBtn);
 
         titleLayout.setVisibility(View.GONE);
         noteTv.setVisibility(View.GONE);
@@ -85,14 +85,14 @@ public class PopupDialog extends Dialog {
         }
     }
 
-//    public void setNotMatchTv(boolean notMatch) {
-//        if(notMatch) {
-//            notMatchTv.setText(R.string.msg_password_mismatch);
-//            notMatchTv.setVisibility(View.VISIBLE);
-//        } else {
-//            notMatchTv.setVisibility(View.GONE);
-//        }
-//    }
+    public void setNotMatchTv(boolean notMatch) {
+        if(notMatch) {
+            //notMatchTv.setText(R.string.msg_password_mismatch);
+            notMatchTv.setVisibility(View.VISIBLE);
+        } else {
+            notMatchTv.setVisibility(View.GONE);
+        }
+    }
 
     public void setContent(String str) {
         contentTv.setText(str);
@@ -111,54 +111,12 @@ public class PopupDialog extends Dialog {
         if (isVisible) editText.setVisibility(View.VISIBLE);
         else editText.setVisibility(View.GONE);
     }
-    public void setEditText(String content) {
-//        if(editText.getVisibility() == View.VISIBLE) {
-            editText.setText(content);
-            editText.requestFocus();
-//        }
-    }
-    public void setEditMinMaxLines(int min, int max) {
-//        if(editText.getVisibility() == View.VISIBLE) {
-            editText.setMinLines(min);
-            editText.setMaxLines(max);
-            if(min == 1 && max == 1) {
-                editText.setGravity(Gravity.CENTER);
-            }else {
-                editText.setGravity(Gravity.TOP);
-            }
-//        }
-    }
-    public void setEditTextInputType(int type) {
-//        if(editText.getVisibility() == View.VISIBLE) {
-            editText.setInputType(type);
-//        }
-    }
-    public void setCheckBox(String cbTitle, boolean defaultCheck) {
-        if(layoutCheckbox != null) layoutCheckbox.setVisibility(View.VISIBLE);
-
-        layoutCheckbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkBox.setChecked(!checkBox.isChecked());
-            }
-        });
-        if(tvCheckBoxTitle != null) tvCheckBoxTitle.setText(cbTitle);
-        if (checkBox != null) {
-            checkBox.setChecked(defaultCheck);
-        }
-    }
-    public Boolean getCheckBoxChecked() {
-        if(checkBox != null) {
-            return checkBox.isChecked();
-        }
-        return false;
-    }
 
     private String mInputText;
 
-    public void setOkButtonText(String str) {
-        okBtn.setText(str);
-    }
+//    public void setOkButtonText(String str) {
+//        okBtn.setText(str);
+//    }
 
     public void setOnOkButtonClickListener(View.OnClickListener listener) {
         okBtn.setOnClickListener(listener);

@@ -97,7 +97,6 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
                     setImage(holder.cbArrive, holder.imgIconBus, true, item);
                 } else {
 
-                    holder.cbArrive.setOnClickListener(null);
                     holder.cbArrive.setTextColor(ContextCompat.getColorStateList(mContext, R.color.gray));
                     holder.cbArrive.setBackgroundResource(R.drawable.bg_arrive_default);
                     holder.cbArrive.setChecked(true);

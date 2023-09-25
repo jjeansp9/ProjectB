@@ -24,4 +24,7 @@ public class Constants {
     public static final String TIME_FORMATTER_HH_MM = "HH:mm";
     public static final String TIME_FORMATTER_M_D_E = "M월 d일 E요일";
     public static final String DATE_FORMATTER_YYYY_MM_KOR = "yyyy년 M월";
+
+    public static final int PHONE_NUM_LENGTH_1 = 11; // 휴대폰번호 length
+    public static final int PHONE_NUM_LENGTH_2 = 10; // 휴대폰번호2 length
 }

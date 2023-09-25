@@ -14,6 +14,9 @@
     <string name="cancel">취소</string>
     <string name="ok">확인</string>
 
+    <string name="dialog_title_alarm">알림</string>
+    <string name="dialog_drive_arrive_confirm">%s에 도착했다면 [확인]을 눌러주세요.</string>
+
     <string name="login_phone_num_empty">휴대폰 번호를 입력해주세요.</string>
     <string name="write_phone_impossible">번호를 올바르게 입력하였는지 확인해주세요.</string>
     <string name="write_phone_not_found">해당 휴대전화의 정보가 존재하지 않습니다.</string>
@@ -24,6 +27,7 @@
     <string name="main_menu_schedule">캠퍼스일정</string>
     <string name="main_menu_briefing">설명회</string>
     <string name="menu_item_settings">설정</string>
+    <string name="menu_item_drive_cancel">운행취소</string>
     <string name="bus_info_empty">운행정보가 없습니다</string>
     <string name="announcement_list_empty">공지사항 목록에 글이 없습니다</string>
 

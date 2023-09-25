@@ -40,7 +40,8 @@
                 android:background="@drawable/bg_white_box"
                 android:layout_marginTop="16dp"
                 android:paddingHorizontal="@dimen/layout_margin"
-                android:paddingVertical="16dp">
+                android:paddingVertical="16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tv_phone_number"
