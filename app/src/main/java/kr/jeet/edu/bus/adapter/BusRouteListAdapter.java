@@ -53,28 +53,6 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
         return new ViewHolder(view);
     }
 
-//    @Override
-//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        BusRouteData item = mList.get(position);
-//
-//        LogMgr.e("clickable: " + item.setClickable);
-//
-//        holder.tvBpName.setText(Utils.getStr(item.bpName));
-//        setImage(holder.cbArrive, holder.imgIconBus, false, position);
-//
-//        if (!item.setClickable){
-//            holder.cbArrive.setOnClickListener(null);
-//            holder.cbArrive.setTextColor(ContextCompat.getColorStateList(mContext, R.color.gray));
-//            holder.cbArrive.setBackgroundResource(R.drawable.bg_arrive_default);
-//        }else{
-//
-//            holder.cbArrive.setOnClickListener(v -> {
-//                setImage(holder.cbArrive, holder.imgIconBus, true, position);
-//                if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList.get(position), position);
-//            });
-//        }
-//    }
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         BusRouteData item = mList.get(position);
@@ -83,7 +61,8 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
 
         if (!item.setClickable) {
 
-            LogMgr.e("EVENT1");
+            LogMgr.e("EVENT1", position+"");
+            Glide.with(mContext).load(R.drawable.icon_bus_yet).into(holder.imgIconBus);
             holder.cbArrive.setOnClickListener(v -> {if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList, position);});
             holder.cbArrive.setTextColor(ContextCompat.getColorStateList(mContext, R.color.gray));
             holder.cbArrive.setBackgroundResource(R.drawable.bg_arrive_default);
@@ -92,39 +71,19 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
         } else {
             holder.cbArrive.setOnClickListener(v -> {
                 LogMgr.e("EVENT2", item.setClickable + "" + position + ", " + item.isSuccess);
-                if (item.isSuccess) {
 
-                    setImage(holder.cbArrive, holder.imgIconBus, true, item);
-                } else {
-
-                    holder.cbArrive.setTextColor(ContextCompat.getColorStateList(mContext, R.color.gray));
-                    holder.cbArrive.setBackgroundResource(R.drawable.bg_arrive_default);
-                    holder.cbArrive.setChecked(true);
-                }
-
+                setImage(holder.cbArrive, holder.imgIconBus, item);
                 if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList, position);
             });
-        }
 
-        setImage(holder.cbArrive, holder.imgIconBus, false, item);
+            setImage(holder.cbArrive, holder.imgIconBus, item);
+        }
     }
 
     @SuppressLint("ResourceType")
-    private void setImage(CheckBox cb, ImageView img, boolean isChanged, BusRouteData item){
-        if (isChanged) {
-            if (cb.isChecked()) setCheckImg(cb, img);
-            else setDefaultImg(cb, img, R.drawable.selector_tv_arrive_check);
-
-        } else {
-            if (cb.isChecked()) {
-                if (item.isSuccess) setCheckImg(cb, img);
-                else if (!item.setClickable) Glide.with(mContext).load(R.drawable.icon_bus).into(img);
-
-            } else {
-                if (item.isSuccess) setCheckImg(cb, img);
-                else setDefaultImg(cb, img, R.drawable.selector_tv_arrive_check);
-            }
-        }
+    private void setImage(CheckBox cb, ImageView img, BusRouteData item){
+        if (item.isSuccess) setCheckImg(cb, img);
+        else setDefaultImg(cb, img, R.drawable.selector_tv_arrive_check);
     }
 
     private void setCheckImg(CheckBox cb, ImageView img){
@@ -139,7 +98,7 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
     private void setDefaultImg(CheckBox cb, ImageView img, int redId){
         //Utils.animateImageChange(mContext, img, R.drawable.icon_bus);
         Glide.with(mContext).load(R.drawable.icon_bus).into(img);
-        cb.setBackgroundResource(R.drawable.selector_arrive_check);
+        cb.setBackgroundResource(R.drawable.bg_arrive_default);
         cb.setTextColor(ContextCompat.getColor(mContext, redId));
     }
 

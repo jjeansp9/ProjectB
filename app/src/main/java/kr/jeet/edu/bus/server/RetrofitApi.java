@@ -76,7 +76,11 @@ public interface RetrofitApi {
 
     // 버스 운행 시작
     @POST("bus/drive")
-    Call<BusDriveResponse> getBusDrive(@Body BusDriveRequest request);
+    Call<BusDriveResponse> getBusDriveStart(@Body BusDriveRequest request);
+
+    // 버스 운행 종료
+    @PATCH("bus/drive")
+    Call<BaseResponse> getBusDriveFinish(@Query("busDriveSeq") int busDriveSeq);
 
     // 버스 노선 조회
     @GET("bus/route")
@@ -85,4 +89,6 @@ public interface RetrofitApi {
     // 버스 정류장 도착
     @PATCH("bus/busStop")
     Call<BaseResponse> getBusStop(@Query("busDriveSeq") int busDriveSeq, @Query("bpCode") String bpCode, @Query("isDrive") String isDrive);
+
+
 }

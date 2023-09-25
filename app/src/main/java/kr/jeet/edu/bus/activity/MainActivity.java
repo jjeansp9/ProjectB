@@ -16,18 +16,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 
-import java.io.IOException;
 import java.util.List;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.common.DataManager;
 import kr.jeet.edu.bus.common.IntentParams;
-import kr.jeet.edu.bus.model.data.ACAData;
 import kr.jeet.edu.bus.model.data.BusDriveSeqData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.model.request.BusDriveRequest;
 import kr.jeet.edu.bus.model.response.BusDriveResponse;
-import kr.jeet.edu.bus.model.response.GetACAListResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
 import kr.jeet.edu.bus.server.RetrofitClient;
 import kr.jeet.edu.bus.utils.LogMgr;
@@ -143,7 +140,7 @@ public class MainActivity extends BaseActivity {
         request.busCode = busInfoList.get(0).busCode;
 
         if(RetrofitClient.getInstance() != null) {
-            RetrofitClient.getApiInterface().getBusDrive(request).enqueue(new Callback<BusDriveResponse>() {
+            RetrofitClient.getApiInterface().getBusDriveStart(request).enqueue(new Callback<BusDriveResponse>() {
                 @Override
                 public void onResponse(Call<BusDriveResponse> call, Response<BusDriveResponse> response) {
                     if(response.isSuccessful()) {

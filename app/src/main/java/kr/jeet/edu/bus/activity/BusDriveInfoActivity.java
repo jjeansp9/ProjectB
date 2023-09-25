@@ -78,7 +78,7 @@ public class BusDriveInfoActivity extends BaseActivity {
         setSupportActionBar(customAppbar.getToolbar());
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.selector_icon_back);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //customAppbar.setTvRight(getString(R.string.menu_item_drive_cancel), v -> requestDriveCancel());
+        customAppbar.setTvRight(getString(R.string.menu_item_drive_cancel), v -> requestDriveCancel());
     }
 
     private void initData(){
@@ -220,7 +220,7 @@ public class BusDriveInfoActivity extends BaseActivity {
                                 item.get(position).setClickable = true;
                                 mList.set(position, item.get(position));
                                 mAdapter.notifyItemChanged(position);
-                                Toast.makeText(mContext, R.string.bus_route_finish, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.bus_route_drive_finish, Toast.LENGTH_SHORT).show();
 
                                 Intent intent = getIntent();
 
@@ -266,33 +266,50 @@ public class BusDriveInfoActivity extends BaseActivity {
     }
 
     private void requestDriveCancel(){
+        showMessageDialog(getString(R.string.dialog_title_alarm), getString(R.string.dialog_drive_cancel_confirm), ok -> {
 
+            hideMessageDialog();
+
+            if(RetrofitClient.getInstance() != null) {
+                showProgressDialog();
+                RetrofitClient.getApiInterface().getBusDriveFinish(_busDriveSeq).enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if(response.isSuccessful()) {
+                            if(response.body() != null) {
+                                PreferenceUtil.setDriveSeq(mContext, 0);
+                                Toast.makeText(mContext, R.string.bus_route_drive_cancel, Toast.LENGTH_SHORT).show();
+
+                                Intent intent = getIntent();
+
+                                intent.putExtra(IntentParams.PARAM_DRIVE_FINISH, true);
+                                setResult(RESULT_OK, intent);
+                                finish();
+                            }
+                        } else {
+                            if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
+
+                            } else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND) {
+
+                            } else {
+
+                            }
+                        }
+                        hideProgressDialog();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        LogMgr.e(TAG, "requestDriveCancel() onFailure >> " + t.getMessage());
+                        Toast.makeText(mContext, R.string.bus_stop_server_fail, Toast.LENGTH_SHORT).show();
+                        hideProgressDialog();
+                    }
+                });
+            }
+
+        }, cancel -> {
+            hideMessageDialog();
+            return;
+        });
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_bus_info, menu);
-//        int positionOfMenuItem = 0;
-//        try {
-//            MenuItem item = menu.getItem(positionOfMenuItem);
-//            SpannableString span = new SpannableString(item.getTitle());
-//            span.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.red)), 0, span.length(), 0);
-//            span.setSpan(new StyleSpan(Typeface.NORMAL), 0, span.length(), 0);
-//
-//            int sizeInPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, mContext.getResources().getDisplayMetrics());
-//            span.setSpan(new AbsoluteSizeSpan(sizeInPx), 0, span.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-//
-//            item.setTitle(span);
-//        }catch(Exception ex){}
-//        return (super.onCreateOptionsMenu(menu));
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_drive_cancel:
-//                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 }

@@ -88,7 +88,7 @@ public class CustomAppbarLayout extends AppBarLayout {
 
     public void setTvRight(String str, OnClickListener listener){
         if (_tvRight != null){
-            _btnBack.setVisibility(View.VISIBLE);
+            _tvRight.setVisibility(View.VISIBLE);
             _tvRight.setText(str);
             _tvRight.setOnClickListener(listener);
         }
