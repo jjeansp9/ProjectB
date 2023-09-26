@@ -77,6 +77,17 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
             });
             setImage(holder.cbArrive, holder.imgIconBus, item, position);
         }
+
+        if (position == 0) setLine(holder.lineStart, holder.lineDriving, holder.lineEnd, View.VISIBLE, View.GONE, View.GONE);
+        else if (position == mList.size() - 1) setLine(holder.lineStart, holder.lineDriving, holder.lineEnd, View.GONE, View.GONE, View.VISIBLE);
+        else setLine(holder.lineStart, holder.lineDriving, holder.lineEnd, View.GONE, View.VISIBLE, View.GONE);
+
+    }
+
+    private void setLine(View start ,View driving , View end,int lineStart, int lineDriving, int lineEnd){
+        start.setVisibility(lineStart);
+        driving.setVisibility(lineDriving);
+        end.setVisibility(lineEnd);
     }
 
     @SuppressLint("ResourceType")
@@ -113,6 +124,7 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
         private TextView tvBpName;
         private ImageView imgIconBus;
         private CheckBox cbArrive;
+        private View lineDriving, lineStart, lineEnd;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -120,6 +132,9 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
             tvBpName = itemView.findViewById(R.id.tv_bp_name);
             imgIconBus = itemView.findViewById(R.id.img_icon_bus);
             cbArrive = itemView.findViewById(R.id.cb_arrive);
+            lineDriving = itemView.findViewById(R.id.line_driving);
+            lineStart = itemView.findViewById(R.id.line_start);
+            lineEnd = itemView.findViewById(R.id.line_end);
 
 //            itemView.setOnClickListener(v -> {
 //                int position = getBindingAdapterPosition();

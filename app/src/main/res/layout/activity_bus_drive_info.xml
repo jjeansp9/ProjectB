@@ -107,6 +107,20 @@
                         android:textSize="@dimen/font_size_large"
                         android:textColor="@color/font_color_default" />
 
+                    <TextView
+                        android:id="@+id/tv_bus_caution"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/tv_bus_info"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:text="※ 운행이 종료된 경우, 반드시 도착버튼을 모두 클릭해주시길 바랍니다."
+                        android:textSize="@dimen/font_size"
+                        android:textColor="@color/red_sub" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
