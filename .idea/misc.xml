@@ -76,6 +76,9 @@
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/menu/menu_bus_info.xml" value="0.3130630630630631" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/menu/menu_main.xml" value="0.38697916666666665" />
         <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.xml" value="0.232" />
+        <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus_dev/app/src/main/res/layout/activity_bus_drive_info.xml" value="0.32207207207207206" />
+        <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus_dev/app/src/main/res/layout/activity_main.xml" value="0.3346846846846847" />
+        <entry key="..\:/JspAndroid/AppProject/dev/JEET_EDU/JeetEducationBus_dev/app/src/main/res/layout/layout_bus_route_list_item.xml" value="0.3346846846846847" />
       </map>
     </option>
   </component>

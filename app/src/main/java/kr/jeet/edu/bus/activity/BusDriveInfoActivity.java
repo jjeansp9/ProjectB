@@ -183,13 +183,14 @@ public class BusDriveInfoActivity extends BaseActivity {
                         }
 
                     } else {
-                        PreferenceUtil.setDriveSeq(mContext, 0);
+                        //PreferenceUtil.setDriveSeq(mContext, 0);
 
                         if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
                             Toast.makeText(mContext, R.string.bus_info_impossible, Toast.LENGTH_SHORT).show();
 
                         }else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND){
                             Toast.makeText(mContext, R.string.bus_info_not_found, Toast.LENGTH_SHORT).show();
+
                         }else{
                             Toast.makeText(mContext, R.string.server_data_empty, Toast.LENGTH_SHORT).show();
                         }
@@ -213,12 +214,20 @@ public class BusDriveInfoActivity extends BaseActivity {
         }
     }
 
-    private void scrollToPosition() {
+    private void scrollToPosition(int position) {
         mRecyclerRoute.post(() -> {
             if (!mRecyclerRoute.hasNestedScrollingParent(ViewCompat.TYPE_NON_TOUCH)) {
                 mRecyclerRoute.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_NON_TOUCH);
             }
-            mRecyclerRoute.smoothScrollToPosition(mList.size());
+            // 아이템의 높이를 얻어옵니다.
+            int itemHeight = mRecyclerRoute.getChildAt(0).getHeight();
+
+            // 디바이스 화면의 높이를 얻어옵니다.
+            int screenHeight = getResources().getDisplayMetrics().heightPixels;
+
+            // position 번째 아이템을 화면 가운데에 위치하도록 스크롤합니다.
+            int scrollToY = (position * itemHeight) - (screenHeight / 2) + (itemHeight * 2);
+            mRecyclerRoute.smoothScrollBy(0, scrollToY);
         });
     }
 
@@ -265,16 +274,18 @@ public class BusDriveInfoActivity extends BaseActivity {
                     } else {
                         if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
                             Toast.makeText(mContext, R.string.bus_route_binding_error, Toast.LENGTH_SHORT).show();
+
                         } else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND) {
                             Toast.makeText(mContext, R.string.bus_route_not_found, Toast.LENGTH_SHORT).show();
-                        } else {
 
+                        } else {
+                            Toast.makeText(mContext, R.string.server_data_empty, Toast.LENGTH_SHORT).show();
                         }
                     }
                     //hideProgressDialog();
                     mProgress.setVisibility(View.GONE);
 
-                    scrollToPosition();
+                    scrollToPosition(position);
                 }
 
                 @Override
@@ -284,7 +295,6 @@ public class BusDriveInfoActivity extends BaseActivity {
                     //hideProgressDialog();
                     mProgress.setVisibility(View.GONE);
 
-                    scrollToPosition();
                 }
             });
         }
@@ -313,11 +323,13 @@ public class BusDriveInfoActivity extends BaseActivity {
                             }
                         } else {
                             if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
+                                Toast.makeText(mContext, R.string.bus_route_drive_cancel_binding_error, Toast.LENGTH_SHORT).show();
 
                             } else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND) {
+                                Toast.makeText(mContext, R.string.bus_route_drive_cancel_not_found, Toast.LENGTH_SHORT).show();
 
                             } else {
-
+                                Toast.makeText(mContext, R.string.server_data_empty, Toast.LENGTH_SHORT).show();
                             }
                         }
                         hideProgressDialog();
