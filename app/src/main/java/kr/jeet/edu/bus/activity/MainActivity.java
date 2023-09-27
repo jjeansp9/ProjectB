@@ -134,6 +134,10 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    // TODO : 1. 정보가 1개가 아니라 n개가 오기 때문에 부모앱 자녀선택화면처럼 구현하기
+    // TODO : 2. 하단에 운행종료 버튼 추가하기
+    // TODO : 3. 로그아웃 했을 때 busDriveSeq 관련 이슈
+
     private void requestDriveStart(){
 
         BusDriveRequest request = new BusDriveRequest();

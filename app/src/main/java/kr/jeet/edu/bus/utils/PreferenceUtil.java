@@ -11,6 +11,7 @@ public class PreferenceUtil {
     public static final String PREF_BUS_NAME = "bus_name"; // 버스 이름
     public static final String PREF_BUS_CODE = "bus_code"; // 버스 코드
     public static final String PREF_PHONE_NUMBER = "phone_number"; // 기사(동승자) 휴대폰번호
+    public static final String PREF_COMPARE_PHONE_NUMBER = "compare_phone_number"; // 로그인 번호 비교
 
     public static final String PREF_DRIVE_SEQ = "drive_seq"; // 버스 운행 seq
 
@@ -65,6 +66,16 @@ public class PreferenceUtil {
     }
 
     public static String getPhoneNumber(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return pref.getString(PREF_PHONE_NUMBER, "");
+    }
+
+    public static void setComparePhoneNumber(Context context, String phoneNum) {
+        SharedPreferences pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        pref.edit().putString(PREF_PHONE_NUMBER, phoneNum).apply();
+    }
+
+    public static String getComparePhoneNumber(Context context) {
         SharedPreferences pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return pref.getString(PREF_PHONE_NUMBER, "");
     }
