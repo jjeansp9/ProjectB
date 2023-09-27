@@ -118,6 +118,8 @@ public class MainActivity extends BaseActivity {
 
         if (_busDriveSeq != 0) btnStartDrive.setText(getString(R.string.btn_go_driving));
         else btnStartDrive.setText(getString(R.string.btn_start_drive));
+
+
     }
 
     @Override

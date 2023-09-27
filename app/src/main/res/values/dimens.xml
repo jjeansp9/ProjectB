@@ -22,6 +22,7 @@
     <dimen name="font_size_xlarge">20dp</dimen>
     <dimen name="font_size_xxlarge">22dp</dimen>
     <dimen name="font_size_xxxlarge">24dp</dimen>
+    <dimen name="font_size_xxxxlarge">28dp</dimen>
 
     <dimen name="editbox_padding">12dp</dimen>
 
