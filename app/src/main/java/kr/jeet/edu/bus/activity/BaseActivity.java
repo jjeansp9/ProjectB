@@ -26,8 +26,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         mContext = this;
     }
-    abstract void initView();
     abstract void initAppbar();
+    abstract void initView();
 
     @Override
     public void onClick(View v) {}
