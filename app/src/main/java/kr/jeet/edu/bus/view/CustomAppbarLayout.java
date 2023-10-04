@@ -45,7 +45,7 @@ public class CustomAppbarLayout extends AppBarLayout {
         _toolbar = view.findViewById(R.id.toolbar);
         _ivLogo = view.findViewById(R.id.iv_logo);
         _btnBack = view.findViewById(R.id.btn_back);
-        _tvRight = view.findViewById(R.id.tv_right);
+        //_tvRight = view.findViewById(R.id.tv_right);
     }
     public MaterialToolbar getToolbar() {
         return _toolbar;
@@ -86,12 +86,12 @@ public class CustomAppbarLayout extends AppBarLayout {
         }
     }
 
-    public void setTvRight(String str, OnClickListener listener){
-        if (_tvRight != null){
-            _tvRight.setVisibility(View.VISIBLE);
-            _tvRight.setText(str);
-            _tvRight.setOnClickListener(listener);
-        }
-    }
+//    public void setTvRight(String str, OnClickListener listener){
+//        if (_tvRight != null){
+//            _tvRight.setVisibility(View.VISIBLE);
+//            _tvRight.setText(str);
+//            _tvRight.setOnClickListener(listener);
+//        }
+//    }
 
 }

@@ -33,19 +33,19 @@
             android:scaleType="fitCenter"
             android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/tv_right"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:layout_gravity="end"
-            android:gravity="center"
-            android:layout_centerVertical="true"
-            android:stateListAnimator="@xml/animate_button_push"
-            android:text="운행취소"
-            android:textColor="@color/red"
-            android:textSize="@dimen/font_size_large"
-            android:visibility="gone"/>
+<!--        <TextView-->
+<!--            android:id="@+id/tv_right"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:layout_gravity="end"-->
+<!--            android:gravity="center"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:stateListAnimator="@xml/animate_button_push"-->
+<!--            android:text="운행취소"-->
+<!--            android:textColor="@color/red"-->
+<!--            android:textSize="@dimen/font_size_large"-->
+<!--            android:visibility="gone"/>-->
     </com.google.android.material.appbar.MaterialToolbar>
 
 </com.google.android.material.appbar.AppBarLayout>

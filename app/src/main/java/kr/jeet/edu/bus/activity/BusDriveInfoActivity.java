@@ -1,5 +1,6 @@
 package kr.jeet.edu.bus.activity;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -88,7 +89,7 @@ public class BusDriveInfoActivity extends BaseActivity {
         setSupportActionBar(customAppbar.getToolbar());
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.selector_icon_back);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        customAppbar.setTvRight(getString(R.string.menu_item_drive_cancel), v -> requestDriveCancel());
+        //customAppbar.setTvRight(getString(R.string.menu_item_drive_cancel), v -> requestDriveCancel());
     }
 
     private void initData(){
@@ -104,6 +105,9 @@ public class BusDriveInfoActivity extends BaseActivity {
     @Override
     void initView() {
         initData();
+
+        findViewById(R.id.btn_finish).setOnClickListener(this);
+
         mRecyclerRoute = findViewById(R.id.recycler_bus_route);
         mTvListEmpty = findViewById(R.id.tv_route_list_empty);
         mTvBcName = findViewById(R.id.tv_bc_name);
@@ -139,6 +143,16 @@ public class BusDriveInfoActivity extends BaseActivity {
 
         }else{
             Toast.makeText(mContext, R.string.bus_route_impossible_click, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        switch (v.getId()){
+            case R.id.btn_finish:
+                requestDriveCancel();
+                break;
         }
     }
 
@@ -250,7 +264,7 @@ public class BusDriveInfoActivity extends BaseActivity {
                                 item.get(position).setClickable = true;
                                 mList.set(position, item.get(position));
                                 mAdapter.notifyItemChanged(position);
-                                Toast.makeText(mContext, R.string.bus_route_drive_finish, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.bus_route_drive_success, Toast.LENGTH_SHORT).show();
 
                                 Intent intent = getIntent();
 
@@ -313,7 +327,7 @@ public class BusDriveInfoActivity extends BaseActivity {
                         if(response.isSuccessful()) {
                             if(response.body() != null) {
                                 PreferenceUtil.setDriveSeq(mContext, 0);
-                                Toast.makeText(mContext, R.string.bus_route_drive_cancel, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.bus_route_drive_finish, Toast.LENGTH_SHORT).show();
 
                                 Intent intent = getIntent();
 
@@ -323,10 +337,10 @@ public class BusDriveInfoActivity extends BaseActivity {
                             }
                         } else {
                             if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
-                                Toast.makeText(mContext, R.string.bus_route_drive_cancel_binding_error, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.bus_route_drive_finish_binding_error, Toast.LENGTH_SHORT).show();
 
                             } else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND) {
-                                Toast.makeText(mContext, R.string.bus_route_drive_cancel_not_found, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.bus_route_drive_finish_not_found, Toast.LENGTH_SHORT).show();
 
                             } else {
                                 Toast.makeText(mContext, R.string.server_data_empty, Toast.LENGTH_SHORT).show();

@@ -53,4 +53,7 @@
 
     <color name="app_version_update_badge">#FFC800</color>
     <color name="settings_layout_stroke">#D5D5D5</color>
+
+    <color name="btn_nor">#013fa6</color>
+    <color name="btn_sel">#062e6f</color>
 </resources>

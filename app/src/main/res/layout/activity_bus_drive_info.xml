@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/customAppbar"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@+id/btn_finish">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -175,6 +175,16 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_finish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/selector_bt_ubderbox"
+        android:text="@string/menu_item_drive_finish"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_large" />
 
     <TextView
         android:id="@+id/tv_route_list_empty"

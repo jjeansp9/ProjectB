@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_drive_cancel"
-        android:title="@string/menu_item_drive_cancel"
+        android:title="@string/menu_item_drive_finish"
         app:showAsAction="always"/>
 </menu>
