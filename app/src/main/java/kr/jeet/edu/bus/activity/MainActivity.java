@@ -15,14 +15,18 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kr.jeet.edu.bus.R;
+import kr.jeet.edu.bus.adapter.BusInfoListAdapter;
 import kr.jeet.edu.bus.common.DataManager;
 import kr.jeet.edu.bus.common.IntentParams;
 import kr.jeet.edu.bus.model.data.BusDriveSeqData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
+import kr.jeet.edu.bus.model.data.BusRouteData;
 import kr.jeet.edu.bus.model.request.BusDriveRequest;
 import kr.jeet.edu.bus.model.response.BusDriveResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
@@ -37,11 +41,16 @@ import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
 
+    // 버스 노선 리스트
+    // http://m.jeet.kr/intro/table/index.jsp?route_type=1&campus_fk=
+
     private static final String TAG = "MainActivity";
 
-    private TextView tvPhoneNum, tvBcName, tvBusName, tvBusCode, tvDate;
+    private TextView tvPhoneNum, tvBcName, tvBusName, tvBusCode, tvDate, tvBusInfoEmpty;
     private AppCompatButton btnStartDrive;
-    List<BusInfoData> busInfoList;
+    private List<BusInfoData> busInfoList = new ArrayList<>();
+    private RecyclerView mRecyclerBusInfo;
+    private BusInfoListAdapter mBusInfoAdapter;
 
     private int _busDriveSeq = 0;
 
@@ -69,7 +78,7 @@ public class MainActivity extends BaseActivity {
 
                 if(finished) {
                     _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
-                    btnStartDrive.setText(getString(R.string.btn_start_drive));
+                    //btnStartDrive.setText(getString(R.string.btn_start_drive));
                 }
             }
         }
@@ -97,7 +106,6 @@ public class MainActivity extends BaseActivity {
 
         busInfoList = DataManager.getInstance().getBusInfoList();
         _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
-
         //mHandler.sendEmptyMessage(CMD_GET_ACALIST);
     }
 
@@ -105,44 +113,56 @@ public class MainActivity extends BaseActivity {
     void initView() {
         initData();
 
-        btnStartDrive = findViewById(R.id.btn_start_drive);
-        btnStartDrive.setOnClickListener(this);
+//        btnStartDrive = findViewById(R.id.btn_start_drive);
+//        btnStartDrive.setOnClickListener(this);
+//
+//        tvPhoneNum = findViewById(R.id.tv_phone_number);
+//        tvBusName = findViewById(R.id.tv_bus_name);
+//        //tvDate = findViewById(R.id.tv_date);
+//
+//        //tvDate.setText(Utils.currentDate("yyyy-MM-dd (E)"));
+//        //tvPhoneNum.setText(Utils.getStr(busInfoList.get(0).busPhoneNumber));
+//        tvBusName.setText(Utils.getStr(busInfoList.get(0).busName));
+//
+//        if (_busDriveSeq != 0) btnStartDrive.setText(getString(R.string.btn_go_driving));
+//        else btnStartDrive.setText(getString(R.string.btn_start_drive));
 
-        tvPhoneNum = findViewById(R.id.tv_phone_number);
-        tvBusName = findViewById(R.id.tv_bus_name);
-        tvDate = findViewById(R.id.tv_date);
+        tvBusInfoEmpty = findViewById(R.id.tv_bus_info_empty);
 
-        tvDate.setText(Utils.currentDate("yyyy-MM-dd (E)"));
-        //tvPhoneNum.setText(Utils.getStr(busInfoList.get(0).busPhoneNumber));
-        tvBusName.setText(Utils.getStr(busInfoList.get(0).busName));
+        mRecyclerBusInfo = findViewById(R.id.recycler_bus_info);
+        mBusInfoAdapter = new BusInfoListAdapter(mContext, busInfoList, this::clickBusInfoItem);
+        mRecyclerBusInfo.setAdapter(mBusInfoAdapter);
 
-        if (_busDriveSeq != 0) btnStartDrive.setText(getString(R.string.btn_go_driving));
-        else btnStartDrive.setText(getString(R.string.btn_start_drive));
+        tvBusInfoEmpty.setVisibility(busInfoList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
-    @Override
-    public void onClick(View v) {
-        super.onClick(v);
-        switch (v.getId()){
-            case R.id.btn_start_drive:
-                LogMgr.e(TAG, _busDriveSeq+"");
-                if (_busDriveSeq != 0) startDriveActivity();
-                else requestDriveStart();
-                break;
-        }
+    private void clickBusInfoItem(BusInfoData item){
+        //requestDriveStart(item);
+
+        startDriveActivity();
     }
 
-    // TODO : 1. 정보가 1개가 아니라 n개가 오기 때문에 부모앱 자녀선택화면처럼 구현하기
-    // TODO : 2. 하단에 운행종료 버튼 추가하기
+//    @Override
+//    public void onClick(View v) {
+//        super.onClick(v);
+//        switch (v.getId()){
+//            case R.id.btn_start_drive:
+//                LogMgr.e(TAG, _busDriveSeq+"");
+//                if (_busDriveSeq != 0) startDriveActivity();
+//                else requestDriveStart();
+//                break;
+//        }
+//    }
+
     // TODO : 3. 로그아웃 했을 때 busDriveSeq 관련 이슈
     // TODO : 4. 버스정보조회 api에서 isDrive 데이터를 가져올 수 있는지 확인
 
-    private void requestDriveStart(){
+    private void requestDriveStart(BusInfoData item){
 
         BusDriveRequest request = new BusDriveRequest();
-        request.bcName = busInfoList.get(0).bcName;
-        request.busName = busInfoList.get(0).busName;
-        request.busCode = busInfoList.get(0).busCode;
+        request.bcName = item.bcName;
+        request.busName = item.busName;
+        request.busCode = item.busCode;
 
         if(RetrofitClient.getInstance() != null) {
             RetrofitClient.getApiInterface().getBusDriveStart(request).enqueue(new Callback<BusDriveResponse>() {
