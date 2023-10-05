@@ -19,8 +19,10 @@
     <color name="font_color_bc">#BCBCBC</color>
     <color name="font_color_other_month_cal">#DADADA</color>
     <color name="font_color_red">#ff3e3e</color>
-    <color name="font_color_blue">#155ae4</color>
-    <color name="font_color_blue_sub">#1F72CC</color>
+    <color name="font_color_blue">#000000</color>
+    <color name="font_color_blue_sub">#2B2B2B</color>
+<!--    <color name="font_color_blue">#155ae4</color>-->
+<!--    <color name="font_color_blue_sub">#1F72CC</color>-->
 
     <color name="line">#999</color>
     <color name="line_2">#D5D5D5</color>
@@ -39,7 +41,8 @@
     <color name="popup_line">#bbbbbb</color>
 
     <color name="btn_stroke">#333</color>
-    <color name="color_edit_text_focused">#013FA6</color>
+    <color name="color_edit_text_focused">#000000</color>
+<!--    <color name="color_edit_text_focused">#013FA6</color>-->
 
     <color name="color_spinner_selected_item">#BBDDFF</color>
     <color name="campus_spinner_stroke">#D5D5D5</color>
@@ -54,6 +57,8 @@
     <color name="app_version_update_badge">#FFC800</color>
     <color name="settings_layout_stroke">#D5D5D5</color>
 
-    <color name="btn_nor">#013fa6</color>
-    <color name="btn_sel">#062e6f</color>
+    <color name="btn_nor">#2B2B2B</color>
+    <color name="btn_sel">#000000</color>
+<!--    <color name="btn_nor">#013fa6</color>-->
+<!--    <color name="btn_sel">#062e6f</color>-->
 </resources>
