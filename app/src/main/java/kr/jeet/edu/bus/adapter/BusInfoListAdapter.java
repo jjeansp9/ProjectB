@@ -3,6 +3,7 @@ package kr.jeet.edu.bus.adapter;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +52,12 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
         if(position == NO_POSITION) return;
         BusInfoData item = mList.get(position);
 
-        if (!item.bcName.contains("캠퍼스")) holder.tvBcName.setText(Utils.getStr(item.bcName+"캠퍼스"));
-        else holder.tvBcName.setText(Utils.getStr(item.bcName));
+        if (TextUtils.isEmpty(item.bcName)){
+            holder.tvBcName.setText("");
+        }else{
+            if (!item.bcName.contains("캠퍼스")) holder.tvBcName.setText(Utils.getStr(item.bcName+"캠퍼스"));
+            else holder.tvBcName.setText(Utils.getStr(item.bcName));
+        }
 
         holder.tvBusName.setText(Utils.getStr(item.busName));
         holder.tvPhoneNum.setText(Utils.getStr(item.busPhoneNumber));

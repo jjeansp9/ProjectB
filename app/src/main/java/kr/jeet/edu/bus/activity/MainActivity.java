@@ -88,7 +88,6 @@ public class MainActivity extends BaseActivity {
 
 
     private void initData(){
-
         busInfoList = DataManager.getInstance().getBusInfoList();
         _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
     }
