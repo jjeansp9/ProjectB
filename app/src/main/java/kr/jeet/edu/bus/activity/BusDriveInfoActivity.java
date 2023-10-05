@@ -180,30 +180,32 @@ public class BusDriveInfoActivity extends BaseActivity {
                         if(response.body() != null) {
                             if (mList!=null && mList.size() > 0) mList.clear();
 
-                            List<BusRouteData> getData = response.body().data;
-                            if (getData != null){
+                            if (response.body().data != null){
+                                List<BusRouteData> getData = response.body().data;
+                                if (getData.size() > 0){
 
-                                for (int i = getData.size()-1; 0 <= i ; i--){
-                                    if (i < getData.size() - 1){
-                                        if (getData.get(i).isArrive.equals("Y")){
-                                            getData.get(i+1).setClickable = true;
-                                            break;
+                                    for (int i = getData.size()-1; 0 <= i ; i--){
+                                        if (i < getData.size() - 1){
+                                            if (getData.get(i).isArrive != null && getData.get(i).isArrive.equals("Y")){
+                                                getData.get(i+1).setClickable = true;
+                                                break;
 
-                                        }else if (i == 0){
-                                            getData.get(i).setClickable = true;
+                                            }else if (i == 0){
+                                                getData.get(i).setClickable = true;
+                                            }
                                         }
                                     }
-                                }
-                                for (BusRouteData data : getData) {
-                                    if (data.isArrive.equals("Y")) {
-                                        data.setClickable = true;
-                                        data.isSuccess = true;
+                                    for (BusRouteData data : getData) {
+                                        if (data.isArrive != null && data.isArrive.equals("Y")) {
+                                            data.setClickable = true;
+                                            data.isSuccess = true;
+                                        }
                                     }
+
+                                    if (mList != null) mList.addAll(getData);
+
+                                    //Toast.makeText(mContext, R.string.drive_start, Toast.LENGTH_SHORT).show();
                                 }
-
-                                if (mList != null) mList.addAll(getData);
-
-                                //Toast.makeText(mContext, R.string.drive_start, Toast.LENGTH_SHORT).show();
                             }
                         }
 
