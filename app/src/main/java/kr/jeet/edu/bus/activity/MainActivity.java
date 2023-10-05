@@ -2,9 +2,6 @@ package kr.jeet.edu.bus.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,14 +23,13 @@ import kr.jeet.edu.bus.common.DataManager;
 import kr.jeet.edu.bus.common.IntentParams;
 import kr.jeet.edu.bus.model.data.BusDriveSeqData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
-import kr.jeet.edu.bus.model.data.BusRouteData;
 import kr.jeet.edu.bus.model.request.BusDriveRequest;
 import kr.jeet.edu.bus.model.response.BusDriveResponse;
+import kr.jeet.edu.bus.model.response.BusInfoResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
 import kr.jeet.edu.bus.server.RetrofitClient;
 import kr.jeet.edu.bus.utils.LogMgr;
 import kr.jeet.edu.bus.utils.PreferenceUtil;
-import kr.jeet.edu.bus.utils.Utils;
 import kr.jeet.edu.bus.view.CustomAppbarLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,6 +50,8 @@ public class MainActivity extends BaseActivity {
 
     private int _busDriveSeq = 0;
 
+    private boolean impossibleDrive = false;
+
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         LogMgr.w("result =" + result);
         if(result.getResultCode() != RESULT_CANCELED) {
@@ -65,7 +62,8 @@ public class MainActivity extends BaseActivity {
                 finished = intent.getBooleanExtra(IntentParams.PARAM_DRIVE_FINISH, false);
 
                 if(finished) {
-                    _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
+                    impossibleDrive = false;
+                    requestBusInfo();
                 }
             }
         }
@@ -102,24 +100,35 @@ public class MainActivity extends BaseActivity {
         tvBusInfoEmpty = findViewById(R.id.tv_bus_info_empty);
 
         mRecyclerBusInfo = findViewById(R.id.recycler_bus_info);
-        mBusInfoAdapter = new BusInfoListAdapter(mContext, busInfoList, this::clickBusInfoItem, this::impossibleDrive);
+        mBusInfoAdapter = new BusInfoListAdapter(mContext, busInfoList, this::driving, this::startDrive);
         mRecyclerBusInfo.setAdapter(mBusInfoAdapter);
 
         tvBusInfoEmpty.setVisibility(busInfoList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
-    private void clickBusInfoItem(BusInfoData item){
+    // 운행중 클릭
+    private void driving(BusInfoData item, int position){
         if (item != null){
-            if (item.busDriveSeq != Constants.NOT_DRIVE) startDriveActivity(item);
-            else requestDriveStart(item);
+            if (item.busDriveSeq != Constants.NOT_DRIVING) startDriveActivity(item, position);
+            else requestDriveStart(item, position);
         }
     }
 
-    private void impossibleDrive(){
-        Toast.makeText(mContext, R.string.drive_not_start, Toast.LENGTH_SHORT).show();
+    // 운행시작 클릭
+    private void startDrive(BusInfoData item, int position){
+        for (BusInfoData data : busInfoList) if (data.busDriveSeq != Constants.NOT_DRIVING) impossibleDrive = true;
+
+        if (impossibleDrive) Toast.makeText(mContext, R.string.drive_not_start, Toast.LENGTH_SHORT).show();
+        else {
+            if (item != null){
+                if (item.busDriveSeq != Constants.NOT_DRIVING) startDriveActivity(item, position);
+                else requestDriveStart(item, position);
+            }
+        }
     }
 
-    private void requestDriveStart(BusInfoData item){
+    // 운행시작
+    private void requestDriveStart(BusInfoData item, int position){
 
         BusDriveRequest request = new BusDriveRequest();
         request.bcName = item.bcName;
@@ -134,8 +143,11 @@ public class MainActivity extends BaseActivity {
                         if(response.body() != null) {
                             BusDriveSeqData getData = response.body().data;
                             item.busDriveSeq = getData.busDriveSeq;
-                            startDriveActivity(item);
+                            startDriveActivity(item, position);
                             Toast.makeText(mContext, R.string.drive_start, Toast.LENGTH_SHORT).show();
+
+                            busInfoList.get(position).busDriveSeq = getData.busDriveSeq;
+                            mBusInfoAdapter.notifyItemChanged(position, busInfoList);
                         }
 
                     } else {
@@ -160,7 +172,55 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void startDriveActivity(BusInfoData item){
+    // 버스정보 조회
+    private void requestBusInfo(){
+
+        showProgressDialog();
+
+        String phoneNum = PreferenceUtil.getPhoneNumber(mContext);
+
+        if(RetrofitClient.getInstance() != null) {
+            RetrofitClient.getApiInterface().getBusInfo(phoneNum).enqueue(new Callback<BusInfoResponse>() {
+                @Override
+                public void onResponse(Call<BusInfoResponse> call, Response<BusInfoResponse> response) {
+                    if(response.isSuccessful()) {
+                        if(response.body() != null) {
+                            List<BusInfoData> getDataList = response.body().data;
+                            if (getDataList != null && !getDataList.isEmpty()){
+
+                                if (busInfoList != null) {
+                                    if (busInfoList.size() > 0) busInfoList.clear();
+                                    busInfoList.addAll(getDataList);
+                                }
+
+                                if (mBusInfoAdapter != null) mBusInfoAdapter.notifyDataSetChanged();
+
+                                DataManager.getInstance().setbusInfoList(getDataList);
+                            }
+                        }
+                    } else {
+                        if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
+                            Toast.makeText(mContext, R.string.write_phone_impossible, Toast.LENGTH_SHORT).show();
+
+                        }else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND){
+                            Toast.makeText(mContext, R.string.write_phone_not_found, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onFailure(Call<BusInfoResponse> call, Throwable t) {
+                    LogMgr.e(TAG, "onFailure >> " + t.getMessage());
+                    hideProgressDialog();
+                    Toast.makeText(mContext, R.string.server_fail, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void startDriveActivity(BusInfoData item, int position){
         if (item != null) {
             LogMgr.e(TAG, "driveSeq: " + item.busDriveSeq);
             Intent intent = new Intent(mContext, BusDriveInfoActivity.class);

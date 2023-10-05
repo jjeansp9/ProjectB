@@ -6,11 +6,15 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import kr.jeet.edu.bus.R;
@@ -20,19 +24,19 @@ import kr.jeet.edu.bus.utils.Utils;
 
 public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.ViewHolder>{
 
-    public interface PossibleListener{ public void possibleDrive(BusInfoData item);}
-    public interface ImpossibleListener{ public void impossibleDrive();}
+    public interface DrivingListener{ public void driving(BusInfoData item, int position);}
+    public interface DriveListener{ public void drive(BusInfoData item, int position);}
 
     private Context mContext;
     private List<BusInfoData> mList;
-    private PossibleListener _possibleListener;
-    private ImpossibleListener _impossibleListener;
+    private DrivingListener _drivingListener;
+    private DriveListener _driveListener;
 
-    public BusInfoListAdapter(Context mContext, List<BusInfoData> mList, PossibleListener _possibleListener, ImpossibleListener _impossibleListener) {
+    public BusInfoListAdapter(Context mContext, List<BusInfoData> mList, DrivingListener _drivingListener, DriveListener _driveListener) {
         this.mContext = mContext;
         this.mList = mList;
-        this._possibleListener = _possibleListener;
-        this._impossibleListener = _impossibleListener;
+        this._drivingListener = _drivingListener;
+        this._driveListener = _driveListener;
     }
 
     @NonNull
@@ -53,13 +57,19 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
         holder.tvBusName.setText(Utils.getStr(item.busName));
         holder.tvPhoneNum.setText(Utils.getStr(item.busPhoneNumber));
 
-        if (item.busDriveSeq == Constants.NOT_DRIVE) {
-            holder.btnDrive.setText(mContext.getString(R.string.btn_start_drive));
-            holder.btnDrive.setOnClickListener(v -> _impossibleListener.impossibleDrive());
+        if (item.busDriveSeq == Constants.NOT_DRIVING) {
+            holder.btnDrive.setOnClickListener(v -> _driveListener.drive(item, position));
+            setView(holder.btnDrive, holder.iconDrive, R.drawable.icon_bus_off, R.string.btn_start_drive);
+
         } else {
-            holder.btnDrive.setText(mContext.getString(R.string.btn_go_driving));
-            holder.btnDrive.setOnClickListener(v -> {if (mList.size() > 0) _possibleListener.possibleDrive(item);});
+            holder.btnDrive.setOnClickListener(v -> _drivingListener.driving(item, position));
+            setView(holder.btnDrive, holder.iconDrive, R.drawable.icon_bus_on, R.string.btn_go_driving);
         }
+    }
+
+    private void setView(AppCompatButton btn, ImageView img, int iconId, int strId){
+        btn.setText(mContext.getString(strId));
+        Glide.with(mContext).load(iconId).into(img);
     }
 
     @Override
@@ -72,6 +82,7 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
 
         private TextView tvBcName, tvBusName, tvPhoneNum;
         private AppCompatButton btnDrive;
+        private ImageView iconDrive;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,6 +91,7 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
             tvBusName = itemView.findViewById(R.id.tv_bus_name);
             tvPhoneNum = itemView.findViewById(R.id.tv_phone_number);
             btnDrive = itemView.findViewById(R.id.btn_start_drive);
+            iconDrive = itemView.findViewById(R.id.icon_drive);
         }
     }
 }
