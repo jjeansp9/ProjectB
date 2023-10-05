@@ -22,6 +22,7 @@ import java.util.List;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.adapter.BusInfoListAdapter;
+import kr.jeet.edu.bus.common.Constants;
 import kr.jeet.edu.bus.common.DataManager;
 import kr.jeet.edu.bus.common.IntentParams;
 import kr.jeet.edu.bus.model.data.BusDriveSeqData;
@@ -54,19 +55,6 @@ public class MainActivity extends BaseActivity {
 
     private int _busDriveSeq = 0;
 
-    private final int CMD_GET_ACALIST = 1;  // ACA정보 가져오기
-
-    private Handler mHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            switch (msg.what) {
-                case CMD_GET_ACALIST :
-                    //requestACAList();
-                    break;
-            }
-        }
-    };
-
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         LogMgr.w("result =" + result);
         if(result.getResultCode() != RESULT_CANCELED) {
@@ -78,7 +66,6 @@ public class MainActivity extends BaseActivity {
 
                 if(finished) {
                     _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
-                    //btnStartDrive.setText(getString(R.string.btn_start_drive));
                 }
             }
         }
@@ -106,56 +93,31 @@ public class MainActivity extends BaseActivity {
 
         busInfoList = DataManager.getInstance().getBusInfoList();
         _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
-        //mHandler.sendEmptyMessage(CMD_GET_ACALIST);
     }
 
     @Override
     void initView() {
         initData();
 
-//        btnStartDrive = findViewById(R.id.btn_start_drive);
-//        btnStartDrive.setOnClickListener(this);
-//
-//        tvPhoneNum = findViewById(R.id.tv_phone_number);
-//        tvBusName = findViewById(R.id.tv_bus_name);
-//        //tvDate = findViewById(R.id.tv_date);
-//
-//        //tvDate.setText(Utils.currentDate("yyyy-MM-dd (E)"));
-//        //tvPhoneNum.setText(Utils.getStr(busInfoList.get(0).busPhoneNumber));
-//        tvBusName.setText(Utils.getStr(busInfoList.get(0).busName));
-//
-//        if (_busDriveSeq != 0) btnStartDrive.setText(getString(R.string.btn_go_driving));
-//        else btnStartDrive.setText(getString(R.string.btn_start_drive));
-
         tvBusInfoEmpty = findViewById(R.id.tv_bus_info_empty);
 
         mRecyclerBusInfo = findViewById(R.id.recycler_bus_info);
-        mBusInfoAdapter = new BusInfoListAdapter(mContext, busInfoList, this::clickBusInfoItem);
+        mBusInfoAdapter = new BusInfoListAdapter(mContext, busInfoList, this::clickBusInfoItem, this::impossibleDrive);
         mRecyclerBusInfo.setAdapter(mBusInfoAdapter);
 
         tvBusInfoEmpty.setVisibility(busInfoList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private void clickBusInfoItem(BusInfoData item){
-        //requestDriveStart(item);
-
-        startDriveActivity();
+        if (item != null){
+            if (item.busDriveSeq != Constants.NOT_DRIVE) startDriveActivity(item);
+            else requestDriveStart(item);
+        }
     }
 
-//    @Override
-//    public void onClick(View v) {
-//        super.onClick(v);
-//        switch (v.getId()){
-//            case R.id.btn_start_drive:
-//                LogMgr.e(TAG, _busDriveSeq+"");
-//                if (_busDriveSeq != 0) startDriveActivity();
-//                else requestDriveStart();
-//                break;
-//        }
-//    }
-
-    // TODO : 3. 로그아웃 했을 때 busDriveSeq 관련 이슈
-    // TODO : 4. 버스정보조회 api에서 isDrive 데이터를 가져올 수 있는지 확인
+    private void impossibleDrive(){
+        Toast.makeText(mContext, R.string.drive_not_start, Toast.LENGTH_SHORT).show();
+    }
 
     private void requestDriveStart(BusInfoData item){
 
@@ -171,21 +133,18 @@ public class MainActivity extends BaseActivity {
                     if(response.isSuccessful()) {
                         if(response.body() != null) {
                             BusDriveSeqData getData = response.body().data;
-                            PreferenceUtil.setDriveSeq(mContext, getData.busDriveSeq); // drive seq
-                            _busDriveSeq = getData.busDriveSeq;
-                            startDriveActivity();
+                            item.busDriveSeq = getData.busDriveSeq;
+                            startDriveActivity(item);
                             Toast.makeText(mContext, R.string.drive_start, Toast.LENGTH_SHORT).show();
-                            btnStartDrive.setText(getString(R.string.btn_go_driving));
                         }
 
                     } else {
-                        PreferenceUtil.setDriveSeq(mContext, 0);
-
                         if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
                             Toast.makeText(mContext, R.string.bus_info_impossible, Toast.LENGTH_SHORT).show();
 
                         }else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND){
                             Toast.makeText(mContext, R.string.bus_info_not_found, Toast.LENGTH_SHORT).show();
+
                         }else{
                             Toast.makeText(mContext, R.string.server_data_empty, Toast.LENGTH_SHORT).show();
                         }
@@ -201,8 +160,13 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void startDriveActivity(){
-        resultLauncher.launch(new Intent(mContext, BusDriveInfoActivity.class));
+    private void startDriveActivity(BusInfoData item){
+        if (item != null) {
+            LogMgr.e(TAG, "driveSeq: " + item.busDriveSeq);
+            Intent intent = new Intent(mContext, BusDriveInfoActivity.class);
+            intent.putExtra(IntentParams.PARAM_BUS_INFO, item);
+            resultLauncher.launch(intent);
+        }
     }
 
     @Override

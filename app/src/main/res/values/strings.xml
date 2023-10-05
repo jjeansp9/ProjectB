@@ -53,6 +53,7 @@
     <string name="bus_info_not_found">해당 운행정보가 존재하지 않습니다.</string>
     <string name="bus_start_server_fail">서버가 원활하지 않아 운행을 시작할 수 없습니다.</string>
     <string name="drive_start">버스 운행을 시작합니다.</string>
+    <string name="drive_not_start">운행을 시작하려면, 운행중인 노선이 종료되어야 합니다.</string>
 
     <string name="bus_stop_server_fail">서버가 원활하지 않습니다. 잠시 후 다시 시도해주세요.</string>
     <string name="bus_route_empty">노선 정보가 없습니다.</string>

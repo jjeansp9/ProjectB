@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.SpannableString;
@@ -73,6 +74,8 @@ public class BusDriveInfoActivity extends BaseActivity {
     private static final String DRIVE = "Y";
     private static final String NOT_DRIVE = "N";
 
+    private BusInfoData mInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,13 +96,21 @@ public class BusDriveInfoActivity extends BaseActivity {
     }
 
     private void initData(){
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(IntentParams.PARAM_BUS_INFO)){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                mInfo = intent.getParcelableExtra(IntentParams.PARAM_BUS_INFO, BusInfoData.class);
+            }else{
+                mInfo = intent.getParcelableExtra(IntentParams.PARAM_BUS_INFO);
+            }
+        }
 
         busInfoList = DataManager.getInstance().getBusInfoList();
 
-        _bcName = busInfoList.get(0).bcName;
-        _busCode = busInfoList.get(0).busCode;
-        _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
-        _phoneNumber = PreferenceUtil.getPhoneNumber(mContext);
+        _bcName = Utils.getStr(mInfo.bcName);
+        _busCode = mInfo.busCode;
+        _busDriveSeq = mInfo.busDriveSeq;
+        _phoneNumber = Utils.getStr(mInfo.busPhoneNumber);
     }
 
     @Override
@@ -116,8 +127,8 @@ public class BusDriveInfoActivity extends BaseActivity {
 
         mProgress = findViewById(R.id.progress);
 
-        mTvBcName.setText(_bcName);
-        mTvBusInfo.setText(Utils.formatNum(_phoneNumber));
+        mTvBcName.setText(Utils.getStr(mInfo.bcName));
+        mTvBusInfo.setText(Utils.formatNum(Utils.getStr(mInfo.busPhoneNumber.replace("-", ""))));
 
         setRecycler();
         requestRouteList();

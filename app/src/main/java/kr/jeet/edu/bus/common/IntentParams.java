@@ -10,4 +10,7 @@ public class IntentParams {
     public final static String PARAM_DRIVE_FINISH = "driveFinish";  // 운행 종료
 
     public final static String PARAM_WEB_VIEW_URL = "webViewUrl";  // 웹뷰에서 로드할 url
+    public final static String PARAM_BUS_DRIVE_SEQ = "busDriveSeq";  // 버스 운행 seq
+
+    public final static String PARAM_BUS_INFO = "busInfo";  // 버스 정보
 }

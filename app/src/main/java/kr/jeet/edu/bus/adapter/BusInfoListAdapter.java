@@ -14,21 +14,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import kr.jeet.edu.bus.R;
+import kr.jeet.edu.bus.common.Constants;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.utils.Utils;
 
 public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.ViewHolder>{
 
-    public interface ItemClickListener{ public void onItemClick(BusInfoData item); }
+    public interface PossibleListener{ public void possibleDrive(BusInfoData item);}
+    public interface ImpossibleListener{ public void impossibleDrive();}
 
     private Context mContext;
     private List<BusInfoData> mList;
-    private ItemClickListener _listener;
+    private PossibleListener _possibleListener;
+    private ImpossibleListener _impossibleListener;
 
-    public BusInfoListAdapter(Context mContext, List<BusInfoData> mList, ItemClickListener _listener) {
+    public BusInfoListAdapter(Context mContext, List<BusInfoData> mList, PossibleListener _possibleListener, ImpossibleListener _impossibleListener) {
         this.mContext = mContext;
         this.mList = mList;
-        this._listener = _listener;
+        this._possibleListener = _possibleListener;
+        this._impossibleListener = _impossibleListener;
     }
 
     @NonNull
@@ -40,6 +44,7 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if(position == NO_POSITION) return;
         BusInfoData item = mList.get(position);
 
         if (!item.bcName.contains("캠퍼스")) holder.tvBcName.setText(Utils.getStr(item.bcName+"캠퍼스"));
@@ -48,6 +53,13 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
         holder.tvBusName.setText(Utils.getStr(item.busName));
         holder.tvPhoneNum.setText(Utils.getStr(item.busPhoneNumber));
 
+        if (item.busDriveSeq == Constants.NOT_DRIVE) {
+            holder.btnDrive.setText(mContext.getString(R.string.btn_start_drive));
+            holder.btnDrive.setOnClickListener(v -> _impossibleListener.impossibleDrive());
+        } else {
+            holder.btnDrive.setText(mContext.getString(R.string.btn_go_driving));
+            holder.btnDrive.setOnClickListener(v -> {if (mList.size() > 0) _possibleListener.possibleDrive(item);});
+        }
     }
 
     @Override
@@ -67,12 +79,7 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
             tvBcName = itemView.findViewById(R.id.tv_bc_name);
             tvBusName = itemView.findViewById(R.id.tv_bus_name);
             tvPhoneNum = itemView.findViewById(R.id.tv_phone_number);
-            //btnDrive = itemView.findViewById(R.id.btn_start_drive);
-
-            itemView.findViewById(R.id.btn_start_drive).setOnClickListener(v -> {
-                int position = getBindingAdapterPosition();
-                if (position != NO_POSITION) if (mList.size() > 0) _listener.onItemClick(mList.get(position));
-            });
+            btnDrive = itemView.findViewById(R.id.btn_start_drive);
         }
     }
 }

@@ -32,4 +32,6 @@ public class Constants {
 
     public final static String POLICY_SERVICE = RetrofitApi.SERVER_BASE_URL+"web/api/policy/service"; // 이용약관
     public final static String POLICY_PRIVACY = RetrofitApi.SERVER_BASE_URL+"web/api/policy/privacy"; // 개인정보취급방침
+
+    public static final int NOT_DRIVE = 0;
 }

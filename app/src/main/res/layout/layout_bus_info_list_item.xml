@@ -22,8 +22,6 @@
 <!--        app:layout_constraintBottom_toTopOf="@id/img_line_gender"-->
 <!--        android:layout_marginVertical="@dimen/layout_margin">-->
 
-<!--        -->
-
 <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <androidx.constraintlayout.widget.Guideline
