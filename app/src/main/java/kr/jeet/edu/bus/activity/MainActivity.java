@@ -51,6 +51,7 @@ public class MainActivity extends BaseActivity {
     private int _busDriveSeq = 0;
 
     private boolean impossibleDrive = false;
+    private boolean startDrive = false;
 
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         LogMgr.w("result =" + result);
@@ -99,7 +100,7 @@ public class MainActivity extends BaseActivity {
         tvBusInfoEmpty = findViewById(R.id.tv_bus_info_empty);
 
         mRecyclerBusInfo = findViewById(R.id.recycler_bus_info);
-        mBusInfoAdapter = new BusInfoListAdapter(mContext, busInfoList, this::driving, this::startDrive);
+        mBusInfoAdapter = new BusInfoListAdapter(mContext, busInfoList, this::driving, this::startDrive, startDrive);
         mRecyclerBusInfo.setAdapter(mBusInfoAdapter);
 
         tvBusInfoEmpty.setVisibility(busInfoList.isEmpty() ? View.VISIBLE : View.GONE);
@@ -117,17 +118,27 @@ public class MainActivity extends BaseActivity {
     private void startDrive(BusInfoData item, int position){
         for (BusInfoData data : busInfoList) if (data.busDriveSeq != Constants.NOT_DRIVING) impossibleDrive = true;
 
-        if (impossibleDrive) Toast.makeText(mContext, R.string.drive_not_start, Toast.LENGTH_SHORT).show();
-        else {
-            if (item != null){
-                if (item.busDriveSeq != Constants.NOT_DRIVING) startDriveActivity(item, position);
-                else requestDriveStart(item, position);
+        if (!startDrive){
+            startDrive = true;
+            if (impossibleDrive) {
+                Toast.makeText(mContext, R.string.drive_not_start, Toast.LENGTH_SHORT).show();
+                startDrive = false;
+            }
+            else {
+                if (item != null){
+                    if (item.busDriveSeq != Constants.NOT_DRIVING) startDriveActivity(item, position);
+                    else requestDriveStart(item, position);
+                }else{
+                    startDrive = false;
+                }
             }
         }
     }
 
     // 운행시작
     private void requestDriveStart(BusInfoData item, int position){
+
+        showProgressDialog();
 
         BusDriveRequest request = new BusDriveRequest();
         request.bcName = item.bcName;
@@ -160,12 +171,16 @@ public class MainActivity extends BaseActivity {
                             Toast.makeText(mContext, R.string.server_data_empty, Toast.LENGTH_SHORT).show();
                         }
                     }
+                    startDrive = false;
+                    hideProgressDialog();
                 }
 
                 @Override
                 public void onFailure(Call<BusDriveResponse> call, Throwable t) {
                     LogMgr.e(TAG, "requestDriveStart() onFailure >> " + t.getMessage());
                     Toast.makeText(mContext, R.string.bus_start_server_fail, Toast.LENGTH_SHORT).show();
+                    startDrive = false;
+                    hideProgressDialog();
                 }
             });
         }

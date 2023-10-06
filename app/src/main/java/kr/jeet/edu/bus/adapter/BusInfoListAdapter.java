@@ -32,12 +32,14 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
     private List<BusInfoData> mList;
     private DrivingListener _drivingListener;
     private DriveListener _driveListener;
+    private boolean startDrive = false;
 
-    public BusInfoListAdapter(Context mContext, List<BusInfoData> mList, DrivingListener _drivingListener, DriveListener _driveListener) {
+    public BusInfoListAdapter(Context mContext, List<BusInfoData> mList, DrivingListener _drivingListener, DriveListener _driveListener, boolean startDrive) {
         this.mContext = mContext;
         this.mList = mList;
         this._drivingListener = _drivingListener;
         this._driveListener = _driveListener;
+        this.startDrive = startDrive;
     }
 
     @NonNull
