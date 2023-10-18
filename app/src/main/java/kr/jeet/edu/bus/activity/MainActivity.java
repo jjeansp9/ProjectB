@@ -1,7 +1,11 @@
 package kr.jeet.edu.bus.activity;
 
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +32,7 @@ import kr.jeet.edu.bus.model.response.BusDriveResponse;
 import kr.jeet.edu.bus.model.response.BusInfoResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
 import kr.jeet.edu.bus.server.RetrofitClient;
+import kr.jeet.edu.bus.utils.LifeCycleChecker;
 import kr.jeet.edu.bus.utils.LogMgr;
 import kr.jeet.edu.bus.utils.PreferenceUtil;
 import kr.jeet.edu.bus.view.CustomAppbarLayout;
@@ -57,7 +62,7 @@ public class MainActivity extends BaseActivity {
         LogMgr.w("result =" + result);
         if(result.getResultCode() != RESULT_CANCELED) {
             Intent intent = result.getData();
-            boolean finished = false;
+            boolean finished;
 
             if(intent != null && intent.hasExtra(IntentParams.PARAM_DRIVE_FINISH)) {
                 finished = intent.getBooleanExtra(IntentParams.PARAM_DRIVE_FINISH, false);
@@ -74,8 +79,11 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = this;
 
+        LifeCycleChecker checker = new LifeCycleChecker();
+        checker.onCreate();
+
+        mContext = this;
         initView();
         initAppbar();
     }
@@ -86,7 +94,6 @@ public class MainActivity extends BaseActivity {
         customAppbar.setLogoVisible(true);
         setSupportActionBar(customAppbar.getToolbar());
     }
-
 
     private void initData(){
         busInfoList = DataManager.getInstance().getBusInfoList();
@@ -116,7 +123,12 @@ public class MainActivity extends BaseActivity {
 
     // 운행시작 클릭
     private void startDrive(BusInfoData item, int position){
-        for (BusInfoData data : busInfoList) if (data.busDriveSeq != Constants.NOT_DRIVING) impossibleDrive = true;
+        for (BusInfoData data : busInfoList) {
+            if (data.busDriveSeq != Constants.NOT_DRIVING) {
+                impossibleDrive = true;
+                break;
+            }
+        }
 
         if (!startDrive){
             startDrive = true;
