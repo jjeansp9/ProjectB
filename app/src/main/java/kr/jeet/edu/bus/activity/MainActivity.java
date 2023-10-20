@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,15 +76,20 @@ public class MainActivity extends BaseActivity {
         }
     });
 
+    private AppCompatActivity activity;
+    LifeCycleChecker checker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        LifeCycleChecker checker = new LifeCycleChecker();
-        checker.onCreate();
-
+        activity = this;
         mContext = this;
+        if (checker == null){
+            checker = new LifeCycleChecker(activity);
+            checker.onCreate();
+        }
+
         initView();
         initAppbar();
     }

@@ -10,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 
@@ -22,13 +23,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.common.Constants;
+import kr.jeet.edu.bus.common.DataManager;
+import kr.jeet.edu.bus.model.data.BusInfoData;
+import kr.jeet.edu.bus.model.response.BusInfoResponse;
+import kr.jeet.edu.bus.server.RetrofitApi;
+import kr.jeet.edu.bus.server.RetrofitClient;
 import kr.jeet.edu.bus.view.CustomAppbarLayout;
 import kr.jeet.edu.bus.view.DrawableAlwaysCrossFadeFactory;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Utils {
     /**
