@@ -1,10 +1,13 @@
 package kr.jeet.edu.bus.activity;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;

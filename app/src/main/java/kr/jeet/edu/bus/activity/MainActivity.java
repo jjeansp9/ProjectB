@@ -1,25 +1,38 @@
 package kr.jeet.edu.bus.activity;
 
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.UiAutomation;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.view.accessibility.AccessibilityManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.platform.app.InstrumentationRegistry;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.adapter.BusInfoListAdapter;
@@ -85,6 +98,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         activity = this;
         mContext = this;
+
         if (checker == null){
             checker = new LifeCycleChecker(activity);
             checker.onCreate();
@@ -92,6 +106,46 @@ public class MainActivity extends BaseActivity {
 
         initView();
         initAppbar();
+
+        // 접근성 권한이 없으면 접근성 권한 설정하는 다이얼로그 띄워주는 부분
+        if(!checkAccessibilityPermissions()) {
+            setAccessibilityPermissions();
+        }
+    }
+
+    public boolean checkAccessibilityPermissions() {
+        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(this.ACCESSIBILITY_SERVICE);
+
+        // getEnabledAccessibilityServiceList use for getting a list of apps that have accessibility permission.
+        List<AccessibilityServiceInfo> list = accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.DEFAULT);
+        LogMgr.e(TAG,"packageName Service: " + list.size());
+
+        for (int i = 0; i < list.size(); i++) {
+            AccessibilityServiceInfo info = list.get(i);
+
+            // Check current app exist in the list.
+            // Compare with package name of app.
+            if (info.getResolveInfo().serviceInfo.packageName.equals(getApplication().getPackageName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Execute to permission settings.
+     */
+    public void setAccessibilityPermissions() {
+        AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
+        gsDialog.setTitle("Setting Accessibility Permission");
+        gsDialog.setMessage("Need Accessibility Permission");
+        gsDialog.setPositiveButton("Check", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // Start setting permission activity
+                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                return;
+            }
+        }).create().show();
     }
 
     @Override
