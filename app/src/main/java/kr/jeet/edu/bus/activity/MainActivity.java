@@ -108,9 +108,9 @@ public class MainActivity extends BaseActivity {
         initAppbar();
 
         // 접근성 권한이 없으면 접근성 권한 설정하는 다이얼로그 띄워주는 부분
-        if(!checkAccessibilityPermissions()) {
-            setAccessibilityPermissions();
-        }
+//        if(!checkAccessibilityPermissions()) {
+//            setAccessibilityPermissions();
+//        }
     }
 
     public boolean checkAccessibilityPermissions() {
