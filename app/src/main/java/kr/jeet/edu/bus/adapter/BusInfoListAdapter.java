@@ -42,6 +42,11 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
         this.startDrive = startDrive;
     }
 
+    public BusInfoListAdapter(Context mContext, List<BusInfoData> mList) {
+        this.mContext = mContext;
+        this.mList = mList;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

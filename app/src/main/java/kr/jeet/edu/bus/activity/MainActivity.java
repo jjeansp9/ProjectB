@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -90,7 +92,7 @@ public class MainActivity extends BaseActivity {
     });
 
     private AppCompatActivity activity;
-    LifeCycleChecker checker;
+    private LifeCycleChecker checker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,40 +115,119 @@ public class MainActivity extends BaseActivity {
 //        }
     }
 
-    public boolean checkAccessibilityPermissions() {
-        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(this.ACCESSIBILITY_SERVICE);
+    boolean isRunning = true;
 
-        // getEnabledAccessibilityServiceList use for getting a list of apps that have accessibility permission.
-        List<AccessibilityServiceInfo> list = accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.DEFAULT);
-        LogMgr.e(TAG,"packageName Service: " + list.size());
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isRunning = true;
 
-        for (int i = 0; i < list.size(); i++) {
-            AccessibilityServiceInfo info = list.get(i);
+        new Thread(() -> {
+            while (isRunning) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-            // Check current app exist in the list.
-            // Compare with package name of app.
-            if (info.getResolveInfo().serviceInfo.packageName.equals(getApplication().getPackageName())) {
-                return true;
+                // 1초마다 실행할 코드
+                List<BusInfoData> updateBusInfoList = DataManager.getInstance().getBusInfoList();
+                requestBusInfoUpdate();
+                LogMgr.e(TAG, "EVENT THREAD");
+
+                // UI 업데이트를 위해 메인 스레드에서 실행
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (updateBusInfoList.size() == busInfoList.size()){
+                        for (int i = 0; i < busInfoList.size(); i++){
+                            if (busInfoList.get(i).busDriveSeq != updateBusInfoList.get(i).busDriveSeq){
+                                busInfoList.clear();
+                                busInfoList.addAll(updateBusInfoList);
+                                mBusInfoAdapter.notifyDataSetChanged();
+                                isRunning = false;
+                                break;
+                            }
+                        }
+                    }
+                });
             }
+        }).start();
+
+//        if (!updateBusInfoList.equals(busInfoList)){
+//
+//            LogMgr.e(TAG, "EVENT RESUME");
+//        }
+    }
+
+    private void requestBusInfoUpdate(){
+
+        showProgressDialog();
+
+        String phoneNum = PreferenceUtil.getPhoneNumber(activity);
+
+        if(RetrofitClient.getInstance() != null) {
+            RetrofitClient.getApiInterface().getBusInfo(phoneNum).enqueue(new Callback<BusInfoResponse>() {
+                @Override
+                public void onResponse(Call<BusInfoResponse> call, Response<BusInfoResponse> response) {
+                    if(response.isSuccessful()) {
+                        if(response.body() != null) {
+                            List<BusInfoData> getDataList = response.body().data;
+                            if (getDataList != null && !getDataList.isEmpty()){
+                                DataManager.getInstance().setbusInfoList(getDataList);
+                            }
+                        }
+                    }
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onFailure(Call<BusInfoResponse> call, Throwable t) {
+                    LogMgr.e(TAG, "onFailure >> " + t.getMessage());
+                    hideProgressDialog();
+                }
+            });
         }
-        return false;
     }
 
-    /**
-     * Execute to permission settings.
-     */
-    public void setAccessibilityPermissions() {
-        AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
-        gsDialog.setTitle("Setting Accessibility Permission");
-        gsDialog.setMessage("Need Accessibility Permission");
-        gsDialog.setPositiveButton("Check", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // Start setting permission activity
-                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-                return;
-            }
-        }).create().show();
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isRunning = false;
     }
+
+    //    public boolean checkAccessibilityPermissions() {
+//        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(this.ACCESSIBILITY_SERVICE);
+//
+//        // getEnabledAccessibilityServiceList use for getting a list of apps that have accessibility permission.
+//        List<AccessibilityServiceInfo> list = accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.DEFAULT);
+//        LogMgr.e(TAG,"packageName Service: " + list.size());
+//
+//        for (int i = 0; i < list.size(); i++) {
+//            AccessibilityServiceInfo info = list.get(i);
+//
+//            // Check current app exist in the list.
+//            // Compare with package name of app.
+//            if (info.getResolveInfo().serviceInfo.packageName.equals(getApplication().getPackageName())) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    /**
+//     * Execute to permission settings.
+//     */
+//    public void setAccessibilityPermissions() {
+//        AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
+//        gsDialog.setTitle("Setting Accessibility Permission");
+//        gsDialog.setMessage("Need Accessibility Permission");
+//        gsDialog.setPositiveButton("Check", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//                // Start setting permission activity
+//                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+//                return;
+//            }
+//        }).create().show();
+//    }
 
     @Override
     void initAppbar() {
