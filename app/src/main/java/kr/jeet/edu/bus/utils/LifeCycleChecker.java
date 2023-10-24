@@ -20,7 +20,7 @@ public class LifeCycleChecker extends Application implements LifecycleEventObser
 
     // Handler를 사용하기 위한 상수 정의
     private static final int DELAY_ONE_MINUTE = 60000; // 1분
-    private static final int DELAY_TEN_MINUTES = 600000; // 10분
+    private static final int DELAY_ONE_HOUR = 3600000; // 1시간
 
     // Handler를 위한 변수
     private Handler handler;
@@ -56,11 +56,11 @@ public class LifeCycleChecker extends Application implements LifecycleEventObser
             handler.postDelayed(() -> {
                 if (!isForeground) {
                     // 10분 동안 백그라운드 상태라면 앱을 종료
-                    Log.d(TAG, "앱이 10분 동안 백그라운드에 있음");
+                    Log.d(TAG, "앱이 1시간 동안 백그라운드에 있음. 앱을 종료합니다");
                     activity.finishAffinity();
                     System.exit(0);
                 }
-            }, DELAY_TEN_MINUTES);
+            }, DELAY_ONE_HOUR);
         } else if (event == Lifecycle.Event.ON_START) {
             // 앱이 포그라운드로 전환
             if (handler != null) {
@@ -68,7 +68,7 @@ public class LifeCycleChecker extends Application implements LifecycleEventObser
                 handler = null;
             }
             isForeground = true;
-            Log.d(TAG, "앱이 포그라운드로 전환");
+            Log.d(TAG, "앱 포그라운드로 전환");
         }
     }
 }
