@@ -34,6 +34,8 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import kr.jeet.edu.bus.R;
@@ -73,6 +75,7 @@ public class MainActivity extends BaseActivity {
 
     private boolean impossibleDrive = false;
     private boolean startDrive = false;
+    boolean doubleBackToExitPressedOnce = false;
 
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         LogMgr.w("result =" + result);
@@ -106,6 +109,8 @@ public class MainActivity extends BaseActivity {
             checker.onCreate();
         }
 
+        //startUpdateScheduler();
+
         initView();
         initAppbar();
 
@@ -121,75 +126,6 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         isRunning = true;
-
-        new Thread(() -> {
-            while (isRunning) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                // 1초마다 실행할 코드
-                List<BusInfoData> updateBusInfoList = DataManager.getInstance().getBusInfoList();
-                requestBusInfoUpdate();
-                LogMgr.e(TAG, "EVENT THREAD");
-
-                // UI 업데이트를 위해 메인 스레드에서 실행
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if (updateBusInfoList.size() == busInfoList.size()){
-                        for (int i = 0; i < busInfoList.size(); i++){
-                            if (busInfoList.get(i).busDriveSeq != updateBusInfoList.get(i).busDriveSeq){
-                                busInfoList.clear();
-                                busInfoList.addAll(updateBusInfoList);
-                                mBusInfoAdapter.notifyDataSetChanged();
-                                isRunning = false;
-                                break;
-                            }else{
-                                isRunning = false;
-                            }
-                        }
-                    }else{
-                        isRunning = false;
-                    }
-                });
-            }
-        }).start();
-
-//        if (!updateBusInfoList.equals(busInfoList)){
-//
-//            LogMgr.e(TAG, "EVENT RESUME");
-//        }
-    }
-
-    private void requestBusInfoUpdate(){
-
-        showProgressDialog();
-
-        String phoneNum = PreferenceUtil.getPhoneNumber(activity);
-
-        if(RetrofitClient.getInstance() != null) {
-            RetrofitClient.getApiInterface().getBusInfo(phoneNum).enqueue(new Callback<BusInfoResponse>() {
-                @Override
-                public void onResponse(Call<BusInfoResponse> call, Response<BusInfoResponse> response) {
-                    if(response.isSuccessful()) {
-                        if(response.body() != null) {
-                            List<BusInfoData> getDataList = response.body().data;
-                            if (getDataList != null && !getDataList.isEmpty()){
-                                DataManager.getInstance().setbusInfoList(getDataList);
-                            }
-                        }
-                    }
-                    hideProgressDialog();
-                }
-
-                @Override
-                public void onFailure(Call<BusInfoResponse> call, Throwable t) {
-                    LogMgr.e(TAG, "onFailure >> " + t.getMessage());
-                    hideProgressDialog();
-                }
-            });
-        }
     }
 
     @Override
@@ -197,6 +133,112 @@ public class MainActivity extends BaseActivity {
         super.onPause();
         isRunning = false;
     }
+
+    private void setThreadBusInfo(){
+        new Thread(() -> {
+            while (isRunning) {
+                try {Thread.sleep(500);}
+                catch (InterruptedException e) {e.printStackTrace();}
+                //requestBusInfoUpdate();
+                LogMgr.e(TAG, "EVENT THREAD");
+            }
+        }).start();
+    }
+
+    private ScheduledExecutorService scheduler;
+
+    private final Handler uiHandler = new Handler(Looper.getMainLooper());
+
+    private void startUpdateScheduler() {
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                // 백그라운드 스레드에서 데이터 업데이트 요청
+                updateBusInfoInBackground();
+            }
+        }, 0, 1, TimeUnit.SECONDS);
+    }
+
+    // Activity 종료 또는 더 이상 스케줄러가 필요하지 않을 때 아래의 코드를 호출하여 스케줄러를 종료합니다.
+    private void stopUpdateScheduler() {
+        if (scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdown();
+        }
+    }
+
+    // 백그라운드 스레드에서 데이터 업데이트 요청
+    private void updateBusInfoInBackground() {
+        // 데이터 요청은 백그라운드 스레드에서 수행
+        String phoneNum = PreferenceUtil.getPhoneNumber(activity);
+
+        if (RetrofitClient.getInstance() != null) {
+            RetrofitClient.getApiInterface().getBusInfo(phoneNum).enqueue(new Callback<BusInfoResponse>() {
+                @Override
+                public void onResponse(Call<BusInfoResponse> call, Response<BusInfoResponse> response) {
+                    if (response.isSuccessful()) {
+                        if (response.body() != null) {
+                            final List<BusInfoData> getDataList = response.body().data;
+                            if (getDataList != null && !getDataList.isEmpty()) {
+                                // UI 업데이트는 메인 스레드에서 처리
+                                uiHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        busInfoList.clear();
+                                        for (BusInfoData data : getDataList) {
+                                            for (int i = 0; i < 120; i++) {
+                                                busInfoList.add(data);
+                                            }
+                                        }
+                                        mBusInfoAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BusInfoResponse> call, Throwable t) {
+                    LogMgr.e(TAG, "onFailure >> " + t.getMessage());
+                }
+            });
+        }
+    }
+
+//    private void requestBusInfoUpdate(){
+//
+//        String phoneNum = PreferenceUtil.getPhoneNumber(activity);
+//
+//        if(RetrofitClient.getInstance() != null) {
+//            RetrofitClient.getApiInterface().getBusInfo(phoneNum).enqueue(new Callback<BusInfoResponse>() {
+//                @Override
+//                public void onResponse(Call<BusInfoResponse> call, Response<BusInfoResponse> response) {
+//                    if(response.isSuccessful()) {
+//                        if(response.body() != null) {
+//                            List<BusInfoData> getDataList = response.body().data;
+//                            if (getDataList != null && !getDataList.isEmpty()){
+//
+//                                busInfoList.clear();
+//                                for (BusInfoData data : getDataList){
+//                                    for (int i = 0; i < 120; i++){
+//                                        busInfoList.add(data);
+//                                    }
+//                                }
+//                                //busInfoList.addAll(getDataList);
+//                                mBusInfoAdapter.notifyDataSetChanged();
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<BusInfoResponse> call, Throwable t) {
+//                    LogMgr.e(TAG, "onFailure >> " + t.getMessage());
+//                }
+//            });
+//        }
+//    }
 
     //    public boolean checkAccessibilityPermissions() {
 //        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(this.ACCESSIBILITY_SERVICE);
@@ -415,5 +457,17 @@ public class MainActivity extends BaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, R.string.msg_backbutton_to_exit, Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(() -> doubleBackToExitPressedOnce=false, 2000);
     }
 }

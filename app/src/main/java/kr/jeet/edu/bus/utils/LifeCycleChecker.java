@@ -87,7 +87,7 @@ public class LifeCycleChecker extends Application implements LifecycleEventObser
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null); // 모든 대기 중인 Handler 제거
                 handler = null;
-                requestBusInfo();
+                //requestBusInfo();
             }
             isForeground = true;
             LogMgr.d(TAG, "앱 포그라운드로 전환");
@@ -126,15 +126,17 @@ public class LifeCycleChecker extends Application implements LifecycleEventObser
 
     private void showProgressDialog() {
         if (mProgressDialog == null){
-            View view = activity.getLayoutInflater().inflate(R.layout.dialog_progressbar, null, false);
-            TextView txt = view.findViewById(R.id.text);
-            txt.setText(activity.getString(R.string.requesting));
+            if (activity != null) {
+                View view = activity.getLayoutInflater().inflate(R.layout.dialog_progressbar, null, false);
+                TextView txt = view.findViewById(R.id.text);
+                txt.setText(activity.getString(R.string.requesting));
 
-            mProgressDialog = new AlertDialog.Builder(activity)
-                    .setCancelable(false)
-                    .setView(view)
-                    .create();
-            mProgressDialog.show();
+                mProgressDialog = new AlertDialog.Builder(activity)
+                        .setCancelable(false)
+                        .setView(view)
+                        .create();
+                mProgressDialog.show();
+            }
         }
     }
 
