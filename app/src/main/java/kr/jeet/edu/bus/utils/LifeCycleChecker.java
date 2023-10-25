@@ -64,14 +64,14 @@ public class LifeCycleChecker extends Application implements LifecycleEventObser
             // 앱이 백그라운드로 전환
             if (handler == null) handler = new Handler();
 
-            handler.postDelayed(() -> {
-                // 1분 후에 실행되는 코드
-                if (!isForeground) {
-                    // 1분 동안 앱이 포그라운드로 전환되지 않았다면 isForeground를 false로 설정
-                    isForeground = false;
-                    LogMgr.d(TAG, "앱이 1분 동안 백그라운드에 있음.");
-                }
-            }, DELAY_ONE_MINUTE);
+//            handler.postDelayed(() -> {
+//                // 1분 후에 실행되는 코드
+//                if (!isForeground) {
+//                    // 1분 동안 앱이 포그라운드로 전환되지 않았다면 isForeground를 false로 설정
+//                    isForeground = false;
+//                    LogMgr.d(TAG, "앱이 1분 동안 백그라운드에 있음.");
+//                }
+//            }, DELAY_ONE_MINUTE);
 
             // 10분 동안 백그라운드 상태인지 확인
             handler.postDelayed(() -> {

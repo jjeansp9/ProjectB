@@ -145,8 +145,12 @@ public class MainActivity extends BaseActivity {
                                 mBusInfoAdapter.notifyDataSetChanged();
                                 isRunning = false;
                                 break;
+                            }else{
+                                isRunning = false;
                             }
                         }
+                    }else{
+                        isRunning = false;
                     }
                 });
             }
