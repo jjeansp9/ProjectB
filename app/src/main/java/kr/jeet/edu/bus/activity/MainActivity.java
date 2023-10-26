@@ -65,11 +65,12 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
 
-    private TextView tvPhoneNum, tvBcName, tvBusName, tvBusCode, tvDate, tvBusInfoEmpty;
+    private TextView tvBusInfoEmpty;
     private AppCompatButton btnStartDrive;
     private List<BusInfoData> busInfoList = new ArrayList<>();
     private RecyclerView mRecyclerBusInfo;
     private BusInfoListAdapter mBusInfoAdapter;
+    private String _phoneNum = "";
 
     private int _busDriveSeq = 0;
 
@@ -139,7 +140,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    // Activity 종료 또는 더 이상 스케줄러가 필요하지 않을 때 아래의 코드를 호출하여 스케줄러를 종료합니다.
     private void stopUpdateScheduler() {
         if (scheduler != null && !scheduler.isShutdown()) {
             scheduler.shutdown();
@@ -147,15 +147,12 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    // 백그라운드 스레드에서 데이터 업데이트 요청
     private void updateBusInfoInBackground() {
-        // 데이터 요청은 백그라운드 스레드에서 수행
-        String phoneNum = PreferenceUtil.getPhoneNumber(activity);
 
         LogMgr.e(TAG, "Scheduler Event");
 
         if (RetrofitClient.getInstance() != null) {
-            RetrofitClient.getApiInterface().getBusInfo(phoneNum).enqueue(new Callback<BusInfoResponse>() {
+            RetrofitClient.getApiInterface().getBusInfo(_phoneNum).enqueue(new Callback<BusInfoResponse>() {
                 @Override
                 public void onResponse(Call<BusInfoResponse> call, Response<BusInfoResponse> response) {
                     if (response.isSuccessful()) {
@@ -229,6 +226,7 @@ public class MainActivity extends BaseActivity {
     private void initData(){
         busInfoList = DataManager.getInstance().getBusInfoList();
         _busDriveSeq = PreferenceUtil.getDriveSeq(mContext);
+        _phoneNum = PreferenceUtil.getPhoneNumber(mContext);
     }
 
     @Override
@@ -336,10 +334,8 @@ public class MainActivity extends BaseActivity {
 
         showProgressDialog();
 
-        String phoneNum = PreferenceUtil.getPhoneNumber(mContext);
-
         if(RetrofitClient.getInstance() != null) {
-            RetrofitClient.getApiInterface().getBusInfo(phoneNum).enqueue(new Callback<BusInfoResponse>() {
+            RetrofitClient.getApiInterface().getBusInfo(_phoneNum).enqueue(new Callback<BusInfoResponse>() {
                 @Override
                 public void onResponse(Call<BusInfoResponse> call, Response<BusInfoResponse> response) {
                     if(response.isSuccessful()) {
