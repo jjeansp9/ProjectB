@@ -136,7 +136,6 @@ public class LoginActivity extends BaseActivity {
 
     private void startMain(){
         startActivity(new Intent(mContext, MainActivity.class));
-        //startActivity(new Intent(mContext, SelectBusActivity.class));
         finish();
     }
 }

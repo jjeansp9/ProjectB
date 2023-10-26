@@ -13,4 +13,5 @@ public class IntentParams {
     public final static String PARAM_BUS_DRIVE_SEQ = "busDriveSeq";  // 버스 운행 seq
 
     public final static String PARAM_BUS_INFO = "busInfo";  // 버스 정보
+    public final static String PARAM_BUS_INFO_POSITION = "busInfoPosition";  // 버스 정보 position
 }

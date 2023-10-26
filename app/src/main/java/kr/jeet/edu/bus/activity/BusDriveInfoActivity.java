@@ -36,11 +36,13 @@ import java.util.List;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.adapter.BusRouteListAdapter;
+import kr.jeet.edu.bus.common.Constants;
 import kr.jeet.edu.bus.common.DataManager;
 import kr.jeet.edu.bus.common.IntentParams;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.model.data.BusRouteData;
 import kr.jeet.edu.bus.model.response.BaseResponse;
+import kr.jeet.edu.bus.model.response.BusInfoResponse;
 import kr.jeet.edu.bus.model.response.BusRouteResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
 import kr.jeet.edu.bus.server.RetrofitClient;
@@ -61,8 +63,6 @@ public class BusDriveInfoActivity extends BaseActivity {
     private RelativeLayout mProgress;
     private AppBarLayout appbar;
 
-    private List<BusInfoData> busInfoList;
-
     private BusRouteListAdapter mAdapter;
     private ArrayList<BusRouteData> mList = new ArrayList<>();
 
@@ -70,6 +70,7 @@ public class BusDriveInfoActivity extends BaseActivity {
     private int _busCode = -1;
     private int _busDriveSeq = -1;
     private String _phoneNumber = "";
+    private int _position = -1;
 
     private static final String DRIVE = "Y";
     private static final String NOT_DRIVE = "N";
@@ -86,6 +87,12 @@ public class BusDriveInfoActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        requestBusInfo();
+    }
+
+    @Override
     void initAppbar() {
         CustomAppbarLayout customAppbar = findViewById(R.id.customAppbar);
         customAppbar.setTitle(R.string.title_bus_info);
@@ -97,20 +104,28 @@ public class BusDriveInfoActivity extends BaseActivity {
 
     private void initData(){
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(IntentParams.PARAM_BUS_INFO)){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                mInfo = intent.getParcelableExtra(IntentParams.PARAM_BUS_INFO, BusInfoData.class);
-            }else{
-                mInfo = intent.getParcelableExtra(IntentParams.PARAM_BUS_INFO);
+        if (intent != null){
+            if (intent.hasExtra(IntentParams.PARAM_BUS_INFO)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    mInfo = intent.getParcelableExtra(IntentParams.PARAM_BUS_INFO, BusInfoData.class);
+                }else{
+                    mInfo = intent.getParcelableExtra(IntentParams.PARAM_BUS_INFO);
+                }
+            }
+            if (intent.hasExtra(IntentParams.PARAM_BUS_INFO_POSITION)) {
+                _position = intent.getIntExtra(IntentParams.PARAM_BUS_INFO_POSITION, _position);
             }
         }
 
-        busInfoList = DataManager.getInstance().getBusInfoList();
-
-        _bcName = Utils.getStr(mInfo.bcName);
-        _busCode = mInfo.busCode;
-        _busDriveSeq = mInfo.busDriveSeq;
-        _phoneNumber = Utils.getStr(mInfo.busPhoneNumber);
+        if (mInfo != null){
+            _bcName = Utils.getStr(mInfo.bcName);
+            _busCode = mInfo.busCode;
+            _busDriveSeq = mInfo.busDriveSeq;
+            _phoneNumber = Utils.getStr(mInfo.busPhoneNumber);
+        } else {
+            finish();
+            Toast.makeText(mContext, R.string.bus_route_load_fail, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -375,5 +390,58 @@ public class BusDriveInfoActivity extends BaseActivity {
             hideMessageDialog();
             return;
         });
+    }
+
+    // 버스정보 조회
+    private void requestBusInfo(){
+
+        showProgressDialog();
+
+        String phoneNum = PreferenceUtil.getPhoneNumber(mContext);
+
+        if(RetrofitClient.getInstance() != null) {
+            RetrofitClient.getApiInterface().getBusInfo(phoneNum).enqueue(new Callback<BusInfoResponse>() {
+                @Override
+                public void onResponse(Call<BusInfoResponse> call, Response<BusInfoResponse> response) {
+                    if(response.isSuccessful()) {
+                        if(response.body() != null) {
+                            List<BusInfoData> getDataList = response.body().data;
+                            if (getDataList != null && !getDataList.isEmpty()){
+                                
+                                for (int i = 0; i < getDataList.size(); i++) {
+                                    if (i == _position) {
+                                        if (getDataList.get(i).busDriveSeq == Constants.NOT_DRIVING) {
+                                            finish();
+                                            Toast.makeText(mContext, R.string.bus_route_already_end, Toast.LENGTH_SHORT).show();
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                DataManager.getInstance().setbusInfoList(getDataList);
+                            }
+                        }
+                    } else {
+                        if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
+                            Toast.makeText(mContext, R.string.bus_route_wrong_approach, Toast.LENGTH_SHORT).show();
+                            finish();
+                        }else if (response.code() == RetrofitApi.RESPONSE_CODE_NOT_FOUND){
+                            Toast.makeText(mContext, R.string.write_phone_not_found, Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                    
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onFailure(Call<BusInfoResponse> call, Throwable t) {
+                    LogMgr.e(TAG, "onFailure >> " + t.getMessage());
+                    hideProgressDialog();
+                    Toast.makeText(mContext, R.string.bus_route_server_fail, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+        }
     }
 }
