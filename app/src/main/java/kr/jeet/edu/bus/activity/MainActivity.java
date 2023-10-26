@@ -29,6 +29,7 @@ import kr.jeet.edu.bus.common.IntentParams;
 import kr.jeet.edu.bus.model.data.BusDriveSeqData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.model.request.BusDriveRequest;
+import kr.jeet.edu.bus.model.response.BaseResponse;
 import kr.jeet.edu.bus.model.response.BusDriveResponse;
 import kr.jeet.edu.bus.model.response.BusInfoResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
@@ -253,7 +254,17 @@ public class MainActivity extends BaseActivity {
             else {
                 if (item != null){
                     if (item.busDriveSeq != Constants.NOT_DRIVING) startDriveActivity(item, position);
-                    else requestDriveStart(item, position);
+                    else {
+                        showMessageDialog(getString(R.string.dialog_title_alarm), getString(R.string.dialog_drive_start_confirm), ok -> {
+                            hideMessageDialog();
+                            requestDriveStart(item, position);
+
+                        }, cancel -> {
+                            hideMessageDialog();
+                            startDrive = false;
+                            return;
+                        });
+                    }
                 }else{
                     startDrive = false;
                 }

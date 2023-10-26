@@ -25,6 +25,7 @@
     <string name="dialog_title_alarm">알림</string>
     <string name="dialog_drive_arrive_confirm">%s에 도착했다면 [확인]을 눌러주세요.</string>
     <string name="dialog_drive_cancel_confirm">운행을 종료하려면 [확인]을 눌러주세요.</string>
+    <string name="dialog_drive_start_confirm">운행을 시작하려면 [확인]을 눌러주세요.</string>
 
     <string name="login_phone_num_empty">휴대폰 번호를 입력해주세요.</string>
     <string name="write_phone_impossible">번호를 올바르게 입력하였는지 확인해주세요.</string>

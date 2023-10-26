@@ -59,6 +59,8 @@
 
     <color name="btn_nor">#2B2B2B</color>
     <color name="btn_sel">#000000</color>
+    <color name="btn_white_nor">#ffffff</color>
+    <color name="btn_white_sel">#E8E8E8</color>
 <!--    <color name="btn_nor">#013fa6</color>-->
 <!--    <color name="btn_sel">#062e6f</color>-->
 </resources>

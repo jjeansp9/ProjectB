@@ -181,7 +181,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/selector_bt_ubderbox"
+        android:background="@drawable/selector_bt_black"
         android:stateListAnimator="@xml/animate_button_pull"
         android:paddingVertical="16dp"
         android:text="@string/menu_item_drive_finish"

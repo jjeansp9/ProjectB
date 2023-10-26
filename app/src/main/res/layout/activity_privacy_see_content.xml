@@ -57,7 +57,7 @@
         android:id="@+id/btn_pvy_consent_confirm"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_button_layout_height"
-        android:background="@drawable/selector_bt_ubderbox"
+        android:background="@drawable/selector_bt_black"
         android:stateListAnimator="@xml/animate_button_pull"
         android:text="@string/ok"
         android:textColor="@color/white"
