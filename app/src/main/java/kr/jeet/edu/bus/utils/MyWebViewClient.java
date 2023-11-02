@@ -37,7 +37,7 @@ public class MyWebViewClient extends WebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         if (!request.getUrl().toString().startsWith("http://") && !request.getUrl().toString().startsWith("https://")) {
-            if (request.getUrl().toString().startsWith("intent")) {
+            if (request.getUrl().toString().startsWith("intent") && activity != null) {
                 Intent schemeIntent;
                 try {
                     schemeIntent = Intent.parseUri(request.getUrl().toString(), Intent.URI_INTENT_SCHEME);
@@ -62,7 +62,7 @@ public class MyWebViewClient extends WebViewClient {
                 }
             } else {
                 try {
-                    activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(request.getUrl().toString())));
+                    if (activity != null) activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(request.getUrl().toString())));
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -110,7 +110,7 @@ public class MyWebViewClient extends WebViewClient {
     }
 
     private void showProgressDialog() {
-        if (mProgressDialog == null){
+        if (mProgressDialog == null && activity != null && !activity.isFinishing()){
             View view = activity.getLayoutInflater().inflate(R.layout.dialog_progressbar, null, false);
             TextView txt = view.findViewById(R.id.text);
             txt.setText(activity.getString(R.string.requesting));
@@ -125,7 +125,7 @@ public class MyWebViewClient extends WebViewClient {
 
     private void hideProgressDialog() {
         try {
-            if (mProgressDialog != null) {
+            if (mProgressDialog != null && activity != null && !activity.isFinishing()) {
                 mProgressDialog.dismiss();
                 mProgressDialog = null;
             }

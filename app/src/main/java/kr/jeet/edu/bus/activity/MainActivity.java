@@ -29,7 +29,6 @@ import kr.jeet.edu.bus.common.IntentParams;
 import kr.jeet.edu.bus.model.data.BusDriveSeqData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.model.request.BusDriveRequest;
-import kr.jeet.edu.bus.model.response.BaseResponse;
 import kr.jeet.edu.bus.model.response.BusDriveResponse;
 import kr.jeet.edu.bus.model.response.BusInfoResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
@@ -96,11 +95,6 @@ public class MainActivity extends BaseActivity {
 
         initView();
         initAppbar();
-
-        // 접근성 권한이 없으면 접근성 권한 설정하는 다이얼로그 띄워주는 부분
-//        if(!checkAccessibilityPermissions()) {
-//            setAccessibilityPermissions();
-//        }
     }
 
     @Override
@@ -164,41 +158,6 @@ public class MainActivity extends BaseActivity {
             });
         }
     }
-
-    //    public boolean checkAccessibilityPermissions() {
-//        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(this.ACCESSIBILITY_SERVICE);
-//
-//        // getEnabledAccessibilityServiceList use for getting a list of apps that have accessibility permission.
-//        List<AccessibilityServiceInfo> list = accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.DEFAULT);
-//        LogMgr.e(TAG,"packageName Service: " + list.size());
-//
-//        for (int i = 0; i < list.size(); i++) {
-//            AccessibilityServiceInfo info = list.get(i);
-//
-//            // Check current app exist in the list.
-//            // Compare with package name of app.
-//            if (info.getResolveInfo().serviceInfo.packageName.equals(getApplication().getPackageName())) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    /**
-//     * Execute to permission settings.
-//     */
-//    public void setAccessibilityPermissions() {
-//        AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
-//        gsDialog.setTitle("Setting Accessibility Permission");
-//        gsDialog.setMessage("Need Accessibility Permission");
-//        gsDialog.setPositiveButton("Check", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int which) {
-//                // Start setting permission activity
-//                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-//                return;
-//            }
-//        }).create().show();
-//    }
 
     @Override
     void initAppbar() {

@@ -1,30 +1,12 @@
 package kr.jeet.edu.bus.activity;
 
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -199,25 +181,30 @@ public class BusDriveInfoActivity extends BaseActivity {
                                 List<BusRouteData> getData = response.body().data;
                                 if (getData.size() > 0){
 
-                                    for (int i = getData.size()-1; 0 <= i ; i--){
-                                        if (i < getData.size() - 1){
-                                            if (getData.get(i).isArrive != null && getData.get(i).isArrive.equals("Y")){
-                                                getData.get(i+1).setClickable = true;
-                                                break;
+                                    try {
+                                        for (int i = getData.size()-1; 0 <= i ; i--){
+                                            if (i < getData.size() - 1){
+                                                if (getData.get(i).isArrive != null && getData.get(i).isArrive.equals("Y")){
+                                                    getData.get(i+1).setClickable = true;
+                                                    break;
 
-                                            }else if (i == 0){
-                                                getData.get(i).setClickable = true;
+                                                }else if (i == 0){
+                                                    getData.get(i).setClickable = true;
+                                                }
                                             }
                                         }
-                                    }
-                                    for (BusRouteData data : getData) {
-                                        if (data.isArrive != null && data.isArrive.equals("Y")) {
-                                            data.setClickable = true;
-                                            data.isSuccess = true;
+                                        for (BusRouteData data : getData) {
+                                            if (data.isArrive != null && data.isArrive.equals("Y")) {
+                                                data.setClickable = true;
+                                                data.isSuccess = true;
+                                            }
                                         }
-                                    }
 
-                                    if (mList != null) mList.addAll(getData);
+                                        if (mList != null) mList.addAll(getData);
+                                    }catch (Exception e) {
+                                        Toast.makeText(mContext, R.string.server_data_empty, Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
 
                                     //Toast.makeText(mContext, R.string.drive_start, Toast.LENGTH_SHORT).show();
                                 }
