@@ -61,6 +61,9 @@ public class MainActivity extends BaseActivity {
     private boolean startDrive = false;
     boolean doubleBackToExitPressedOnce = false;
 
+    private AppCompatActivity activity;
+    private LifeCycleChecker checker;
+
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         LogMgr.w("result =" + result);
         if(result.getResultCode() != RESULT_CANCELED) {
@@ -78,8 +81,7 @@ public class MainActivity extends BaseActivity {
         }
     });
 
-    private AppCompatActivity activity;
-    private LifeCycleChecker checker;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
