@@ -132,7 +132,7 @@ public class BusDriveInfoActivity extends BaseActivity {
         str = TextUtils.isEmpty(mInfo.bcName) ? "정보 없음" : mInfo.bcName;
         mTvBcName.setText(str);
 
-        str = TextUtils.isEmpty(mInfo.busPhoneNumber) ? "정보없음" : Utils.formatNum(mInfo.busPhoneNumber.replace("-", ""));
+        str = TextUtils.isEmpty(mInfo.busPhoneNumber) ? "정보 없음" : Utils.formatNum(mInfo.busPhoneNumber.replace("-", ""));
         mTvBusPhone.setText(Utils.formatNum(Utils.getStr(mInfo.busPhoneNumber.replace("-", ""))));
 
         str = TextUtils.isEmpty(PreferenceUtil.getStartDate(mContext)) ? "정보 없음" : PreferenceUtil.getStartDate(mContext);
