@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,7 +42,7 @@ public class BusDriveInfoActivity extends BaseActivity {
     private static final String TAG = "BusDriveInfoActivity";
 
     private RecyclerView mRecyclerRoute;
-    private TextView mTvListEmpty, mTvBcName, mTvBusInfo;
+    private TextView mTvListEmpty, mTvBcName, mTvBusPhone, mTvBusStartDate;
     private RelativeLayout mProgress;
     private AppBarLayout appbar;
 
@@ -119,13 +120,23 @@ public class BusDriveInfoActivity extends BaseActivity {
         mRecyclerRoute = findViewById(R.id.recycler_bus_route);
         mTvListEmpty = findViewById(R.id.tv_route_list_empty);
         mTvBcName = findViewById(R.id.tv_bc_name);
-        mTvBusInfo = findViewById(R.id.tv_bus_info);
+        mTvBusPhone = findViewById(R.id.tv_bus_phone);
+        mTvBusStartDate = findViewById(R.id.tv_start_date);
+
         appbar = findViewById(R.id.appbar);
 
         mProgress = findViewById(R.id.progress);
 
-        mTvBcName.setText(Utils.getStr(mInfo.bcName));
-        mTvBusInfo.setText(Utils.formatNum(Utils.getStr(mInfo.busPhoneNumber.replace("-", ""))));
+        String str = "";
+
+        str = TextUtils.isEmpty(mInfo.bcName) ? "정보 없음" : mInfo.bcName;
+        mTvBcName.setText(str);
+
+        str = TextUtils.isEmpty(mInfo.busPhoneNumber) ? "정보없음" : Utils.formatNum(mInfo.busPhoneNumber.replace("-", ""));
+        mTvBusPhone.setText(Utils.formatNum(Utils.getStr(mInfo.busPhoneNumber.replace("-", ""))));
+
+        str = TextUtils.isEmpty(PreferenceUtil.getStartDate(mContext)) ? "정보 없음" : PreferenceUtil.getStartDate(mContext);
+        mTvBusStartDate.setText(str);
 
         setRecycler();
         requestRouteList();

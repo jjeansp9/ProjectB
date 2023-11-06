@@ -14,6 +14,7 @@ public class PreferenceUtil {
     public static final String PREF_COMPARE_PHONE_NUMBER = "compare_phone_number"; // 로그인 번호 비교
 
     public static final String PREF_DRIVE_SEQ = "drive_seq"; // 버스 운행 seq
+    public static final String PREF_DRIVE_START_DATE = "drive_start_date"; // 버스 운행 seq
 
     //Auto Login
     public static void setAutoLogin(Context context, boolean set) {
@@ -89,5 +90,15 @@ public class PreferenceUtil {
     public static int getDriveSeq(Context context) {
         SharedPreferences pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return pref.getInt(PREF_DRIVE_SEQ, 0);
+    }
+
+    public static void setStartDate(Context context, String date) {
+        SharedPreferences pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        pref.edit().putString(PREF_DRIVE_START_DATE, date).apply();
+    }
+
+    public static String getStartDate(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return pref.getString(PREF_DRIVE_START_DATE, "");
     }
 }

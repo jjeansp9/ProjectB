@@ -36,6 +36,7 @@ import kr.jeet.edu.bus.server.RetrofitClient;
 import kr.jeet.edu.bus.utils.LifeCycleChecker;
 import kr.jeet.edu.bus.utils.LogMgr;
 import kr.jeet.edu.bus.utils.PreferenceUtil;
+import kr.jeet.edu.bus.utils.Utils;
 import kr.jeet.edu.bus.view.CustomAppbarLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,8 +81,6 @@ public class MainActivity extends BaseActivity {
             }
         }
     });
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,11 +140,20 @@ public class MainActivity extends BaseActivity {
                             if (getDataList != null && !getDataList.isEmpty()) {
 
                                 if (busInfoList != null) {
+
+                                    int checkDriving = 0;
+
                                     if (busInfoList.size() > 0) busInfoList.clear();
                                     for (int i = 0; i < getDataList.size(); i++) {
 
                                         busInfoList.add(getDataList.get(i));
                                         mBusInfoAdapter.notifyItemChanged(i, busInfoList);
+
+                                        checkDriving += getDataList.get(i).busDriveSeq;
+                                    }
+
+                                    if (checkDriving == Constants.NOT_DRIVING) {
+                                        PreferenceUtil.setStartDate(mContext, "");
                                     }
                                 }
                             }
@@ -249,6 +257,10 @@ public class MainActivity extends BaseActivity {
                 public void onResponse(Call<BusDriveResponse> call, Response<BusDriveResponse> response) {
                     if(response.isSuccessful()) {
                         if(response.body() != null) {
+                            // TODO 다른 디바이스에서 운행시작하면 디바이스끼리 출발시간 공유 안됨
+                            String startDate = Utils.currentDate(Constants.DATE_FORMATTER_YYYY_MM_DD_E_HH_mm_ss);
+                            PreferenceUtil.setStartDate(mContext, startDate);
+
                             BusDriveSeqData getData = response.body().data;
                             item.busDriveSeq = getData.busDriveSeq;
                             startDriveActivity(item, position);
