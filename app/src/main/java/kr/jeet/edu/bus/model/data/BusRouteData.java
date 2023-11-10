@@ -6,4 +6,5 @@ public class BusRouteData {
     public String isArrive; // 도착여부
     public boolean isSuccess = false; // 서버 통신 성공여부
     public boolean setClickable = false; // 클릭 활성화 여부
+    public boolean isLoading = false; // 서버요청 로딩 여부
 }

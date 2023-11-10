@@ -43,7 +43,6 @@ public class BusDriveInfoActivity extends BaseActivity {
 
     private RecyclerView mRecyclerRoute;
     private TextView mTvListEmpty, mTvBcName, mTvBusPhone, mTvBusStartDate;
-    private RelativeLayout mProgress;
     private AppBarLayout appbar;
 
     private BusRouteListAdapter mAdapter;
@@ -67,6 +66,7 @@ public class BusDriveInfoActivity extends BaseActivity {
         mContext = this;
         initView();
         initAppbar();
+        setAnimMove(Constants.MOVE_DETAIL_RIGHT);
     }
 
     @Override
@@ -124,8 +124,6 @@ public class BusDriveInfoActivity extends BaseActivity {
         mTvBusStartDate = findViewById(R.id.tv_start_date);
 
         appbar = findViewById(R.id.appbar);
-
-        mProgress = findViewById(R.id.progress);
 
         String str = "";
 
@@ -275,10 +273,11 @@ public class BusDriveInfoActivity extends BaseActivity {
     private void requestBusStop(ArrayList<BusRouteData> item, int position, String isDrive){
 
         //showProgressDialog();
-        mProgress.setVisibility(View.VISIBLE);
 
         String bpCode = item.get(position).bpCode;
 
+        item.get(position).isLoading = true;
+        mAdapter.notifyItemChanged(position);
         if(RetrofitClient.getInstance() != null) {
             RetrofitClient.getApiInterface().getBusStop(_busDriveSeq, bpCode, isDrive).enqueue(new Callback<BaseResponse>() {
                 @Override
@@ -323,8 +322,8 @@ public class BusDriveInfoActivity extends BaseActivity {
                         }
                     }
                     //hideProgressDialog();
-                    mProgress.setVisibility(View.GONE);
-
+                    item.get(position).isLoading = false;
+                    mAdapter.notifyItemChanged(position);
                     scrollToPosition(position);
                 }
 
@@ -333,8 +332,8 @@ public class BusDriveInfoActivity extends BaseActivity {
                     LogMgr.e(TAG, "requestBusStop() onFailure >> " + t.getMessage());
                     Toast.makeText(mContext, R.string.bus_stop_server_fail, Toast.LENGTH_SHORT).show();
                     //hideProgressDialog();
-                    mProgress.setVisibility(View.GONE);
-
+                    item.get(position).isLoading = false;
+                    mAdapter.notifyItemChanged(position);
                 }
             });
         }

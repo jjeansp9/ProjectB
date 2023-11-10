@@ -14,6 +14,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.transition.Transition;
 import androidx.annotation.NonNull;
@@ -58,6 +59,9 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
         BusRouteData item = mList.get(position);
 
         holder.tvBpName.setText(Utils.getStr(item.bpName));
+
+        if (item.isLoading) holder.progressBar.setVisibility(View.VISIBLE);
+        else holder.progressBar.setVisibility(View.GONE);
 
         if (!item.setClickable) {
 
@@ -125,6 +129,7 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
         private ImageView imgIconBus;
         private CheckBox cbArrive;
         private View lineDriving, lineStart, lineEnd;
+        private ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -135,6 +140,7 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
             lineDriving = itemView.findViewById(R.id.line_driving);
             lineStart = itemView.findViewById(R.id.line_start);
             lineEnd = itemView.findViewById(R.id.line_end);
+            progressBar = itemView.findViewById(R.id.progress_bar);
 
 //            itemView.setOnClickListener(v -> {
 //                int position = getBindingAdapterPosition();

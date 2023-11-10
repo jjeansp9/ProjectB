@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -190,6 +193,9 @@ public class MainActivity extends BaseActivity {
 
         mRecyclerBusInfo = findViewById(R.id.recycler_bus_info);
         mBusInfoAdapter = new BusInfoListAdapter(mContext, busInfoList, this::driving, this::startDrive, startDrive);
+        LayoutAnimationController anim = AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_slide);
+        mRecyclerBusInfo.setLayoutAnimation(anim);
+        mRecyclerBusInfo.scheduleLayoutAnimation();
         mRecyclerBusInfo.setAdapter(mBusInfoAdapter);
 
         tvBusInfoEmpty.setVisibility(busInfoList.isEmpty() ? View.VISIBLE : View.GONE);
@@ -349,6 +355,7 @@ public class MainActivity extends BaseActivity {
             intent.putExtra(IntentParams.PARAM_BUS_INFO, item);
             intent.putExtra(IntentParams.PARAM_BUS_INFO_POSITION, position);
             resultLauncher.launch(intent);
+            overridePendingTransition(R.anim.horizontal_enter, R.anim.horizontal_out);
         }
     }
 

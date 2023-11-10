@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import kr.jeet.edu.bus.R;
+import kr.jeet.edu.bus.common.Constants;
 import kr.jeet.edu.bus.dialog.PopupDialog;
 import kr.jeet.edu.bus.utils.LogMgr;
 
@@ -20,6 +21,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     private AlertDialog mProgressDialog = null;
     //메세지 팝업
     protected PopupDialog popupDialog = null;
+    private int move = -1;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,5 +103,38 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        switch (move){
+            case Constants.MOVE_DEFAULT:
+                LogMgr.e("EVENT_DETAIL");
+                break;
+            case Constants.MOVE_LEFT:
+                overridePendingTransition(R.anim.none, R.anim.horizontal_out);
+                LogMgr.e("EVENT_LEFT");
+                break;
+            case Constants.MOVE_RIGHT:
+                overridePendingTransition(R.anim.none, R.anim.horizontal_exit);
+                LogMgr.e("EVENT_RIGHT");
+                break;
+            case Constants.MOVE_UP:
+                overridePendingTransition(R.anim.none, R.anim.vertical_out);
+                LogMgr.e("EVENT_UP");
+                break;
+            case Constants.MOVE_DOWN:
+                overridePendingTransition(R.anim.none, R.anim.vertical_exit);
+                LogMgr.e("EVENT_DOWN");
+                break;
+            case Constants.MOVE_DETAIL_RIGHT:
+                overridePendingTransition(R.anim.horizontal_in, R.anim.horizontal_exit);
+                LogMgr.e("EVENT_DETAIL_RIGHT");
+                break;
+        }
+    }
+    protected void setAnimMove(int setMove){
+        move = setMove;
     }
 }
