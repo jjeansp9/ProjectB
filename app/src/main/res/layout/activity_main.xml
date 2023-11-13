@@ -7,16 +7,6 @@
     tools:context=".activity.MainActivity"
     android:background="@color/bg_gray">
 
-<!--    <com.jetradarmobile.snowfall.SnowfallView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:snowflakeSpeedMin="1"-->
-<!--        app:snowflakeSpeedMax="5"/>-->
-
     <kr.jeet.edu.bus.view.CustomAppbarLayout
         android:id="@+id/customAppbar"
         android:layout_width="match_parent"
