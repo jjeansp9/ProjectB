@@ -72,7 +72,7 @@ public class BusDriveInfoActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        requestBusInfo();
+        requestBusInfo(); // api 호출했을 때 운행이 종료된 경우, finish()
     }
 
     @Override
@@ -406,7 +406,7 @@ public class BusDriveInfoActivity extends BaseActivity {
                             if (getDataList != null && !getDataList.isEmpty()){
                                 
                                 for (int i = 0; i < getDataList.size(); i++) {
-                                    if (i == _position) {
+                                    if (i == _position) { // 해당 버스정보의 position이 busDriveSeq가 0이면 운행 종료된 경우임
                                         if (getDataList.get(i).busDriveSeq == Constants.NOT_DRIVING) {
                                             finish();
                                             Toast.makeText(mContext, R.string.bus_route_already_end, Toast.LENGTH_SHORT).show();
