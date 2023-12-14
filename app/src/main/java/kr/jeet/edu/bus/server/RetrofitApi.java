@@ -7,6 +7,7 @@ import kr.jeet.edu.bus.model.response.BoardDetailResponse;
 import kr.jeet.edu.bus.model.response.BriefingDetailResponse;
 import kr.jeet.edu.bus.model.response.BriefingReservedListResponse;
 import kr.jeet.edu.bus.model.response.BriefingResponse;
+import kr.jeet.edu.bus.model.response.BusDriveHistoryResponse;
 import kr.jeet.edu.bus.model.response.BusDriveResponse;
 import kr.jeet.edu.bus.model.response.BusInfoResponse;
 import kr.jeet.edu.bus.model.response.BusRouteResponse;
@@ -26,7 +27,8 @@ public interface RetrofitApi {
     //public final static String SERVER_BASE_URL = "http://192.168.2.51:7777/";   //kyt local
     //public final static String SERVER_BASE_URL = "http://192.168.2.55:7777/";   //pjh local
     //public final static String SERVER_BASE_URL = "http://192.168.2.77:7777/";  //khj local
-    public final static String SERVER_BASE_URL = "http://211.252.86.237:7777/"; // 신규 cloud local
+    //public final static String SERVER_BASE_URL = "http://211.252.86.237:7777/"; // cloud local
+    public final static String SERVER_BASE_URL = "http://211.252.86.6:7777/"; // 신규 cloud local
 
     public final static String PREFIX = "mobile/api/";
     public final static String FILE_SUFFIX_URL = SERVER_BASE_URL + "attachFile/";
@@ -73,7 +75,12 @@ public interface RetrofitApi {
     // 버스 정보 조회
     @GET("bus")
     Call<BusInfoResponse> getBusInfo(@Query("phoneNumber") String phoneNumber);
-
+    // 버스 목록 조회
+    @GET("buses")
+    Call<BusInfoResponse> getBusesInfo(@Query("busAcaName") String busAcaName, @Query("busCode") int busCode);
+    // 버스 운행 이력 조회
+    @GET("bus/drive")
+    Call<BusDriveHistoryResponse> getBusDriveHistory(@Query("busAcaName") String busAcaName, @Query("busCode") int busCode);
     // 버스 운행 시작
     @POST("bus/drive")
     Call<BusDriveResponse> getBusDriveStart(@Body BusDriveRequest request);

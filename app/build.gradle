@@ -78,4 +78,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-process:2.4.0"
 
     //implementation 'com.github.jetradarmobile:android-snowfall:1.2.1' // snow effect
+
+    implementation 'com.google.android.play:core:1.10.3'
 }

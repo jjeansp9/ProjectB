@@ -14,4 +14,7 @@ public class IntentParams {
 
     public final static String PARAM_BUS_INFO = "busInfo";  // 버스 정보
     public final static String PARAM_BUS_INFO_POSITION = "busInfoPosition";  // 버스 정보 position
+
+    public final static String PARAM_WEB_DETAIL_IMG = "webDetailImg";  // web 이미지 item (차량)
+    public final static String PARAM_WEB_DETAIL_IMG_POSITION = "webDetailImgPosition";  // web 이미지 item position (차량)
 }

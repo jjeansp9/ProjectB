@@ -9,6 +9,10 @@ public class BusInfoData implements Parcelable {
     public int busCode;           // 버스 코드
     public String busPhoneNumber; // 기사(동승자) 휴대폰 번호
     public int busDriveSeq = 0;       // 버스 운행 seq
+    public String isDrive;
+    public String busFile1;
+    public String busFile2;
+    public String startDate;
 
     public BusInfoData() {
     }
@@ -19,6 +23,28 @@ public class BusInfoData implements Parcelable {
         busCode = in.readInt();
         busPhoneNumber = in.readString();
         busDriveSeq = in.readInt();
+        isDrive = in.readString();
+        busFile1 = in.readString();
+        busFile2 = in.readString();
+        startDate = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(bcName);
+        dest.writeString(busName);
+        dest.writeInt(busCode);
+        dest.writeString(busPhoneNumber);
+        dest.writeInt(busDriveSeq);
+        dest.writeString(isDrive);
+        dest.writeString(busFile1);
+        dest.writeString(busFile2);
+        dest.writeString(startDate);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<BusInfoData> CREATOR = new Creator<BusInfoData>() {
@@ -32,18 +58,4 @@ public class BusInfoData implements Parcelable {
             return new BusInfoData[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(bcName);
-        dest.writeString(busName);
-        dest.writeInt(busCode);
-        dest.writeString(busPhoneNumber);
-        dest.writeInt(busDriveSeq);
-    }
 }

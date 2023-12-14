@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,15 +29,15 @@ import com.bumptech.glide.request.transition.ViewPropertyTransition;
 import java.util.ArrayList;
 
 import kr.jeet.edu.bus.R;
+import kr.jeet.edu.bus.common.Constants;
 import kr.jeet.edu.bus.model.data.BusRouteData;
 import kr.jeet.edu.bus.utils.LogMgr;
 import kr.jeet.edu.bus.utils.Utils;
 import kr.jeet.edu.bus.view.DrawableAlwaysCrossFadeFactory;
 
 public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapter.ViewHolder>{
-
+    private static final String TAG = "routeListAdapter";
     public interface ItemClickListener{ public void onItemClick(ArrayList<BusRouteData> item, int position); }
-
     private Context mContext;
     private ArrayList<BusRouteData> mList;
     private ItemClickListener _listener;
@@ -59,7 +60,17 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
         BusRouteData item = mList.get(position);
 
         holder.tvBpName.setText(Utils.getStr(item.bpName));
-
+        LogMgr.e(TAG, position + "/" + item.startDate);
+        if("Y".equals(item.isArrive)) {
+            if (!TextUtils.isEmpty(item.startDate)) {
+                holder.tvArriveDate.setVisibility(View.VISIBLE);
+                holder.tvArriveDate.setText(Utils.formatDate(item.startDate, Constants.DATE_FORMATTER_YYYY_MM_DD_HH_mm_ss, Constants.TIME_FORMATTER_HH_MM));
+            } else {
+                holder.tvArriveDate.setVisibility(View.GONE);
+            }
+        }else{
+            holder.tvArriveDate.setVisibility(View.GONE);
+        }
         if (item.isLoading) holder.progressBar.setVisibility(View.VISIBLE);
         else holder.progressBar.setVisibility(View.GONE);
 
@@ -74,6 +85,8 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
             holder.cbArrive.setChecked(true);
 
         } else {
+            if(position == 0) holder.cbArrive.setVisibility(View.GONE);
+            else holder.cbArrive.setVisibility(View.VISIBLE);
             holder.cbArrive.setOnClickListener(v -> {
                 LogMgr.e("EVENT2", item.setClickable + "" + position + ", " + item.isSuccess);
                 setImage(holder.cbArrive, holder.imgIconBus, item, position);
@@ -125,7 +138,7 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView tvBpName;
+        private TextView tvBpName, tvArriveDate;
         private ImageView imgIconBus;
         private CheckBox cbArrive;
         private View lineDriving, lineStart, lineEnd;
@@ -135,6 +148,7 @@ public class BusRouteListAdapter extends RecyclerView.Adapter<BusRouteListAdapte
             super(itemView);
 
             tvBpName = itemView.findViewById(R.id.tv_bp_name);
+            tvArriveDate = itemView.findViewById(R.id.tv_arrive_date);
             imgIconBus = itemView.findViewById(R.id.img_icon_bus);
             cbArrive = itemView.findViewById(R.id.cb_arrive);
             lineDriving = itemView.findViewById(R.id.line_driving);

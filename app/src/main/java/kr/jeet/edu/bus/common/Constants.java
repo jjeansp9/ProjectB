@@ -22,8 +22,8 @@ public class Constants {
     public static final String FILE_SIZE = "_size";
 
     //dateFormatter String
-    public static final String DATE_FORMATTER_YYYY_MM_DD_E = "yyyy-MM-dd (E)";
-    public static final String DATE_FORMATTER_YYYY_MM_DD_E_HH_mm_ss = "yyyy-MM-dd (E) HH:mm";
+    public static final String DATE_FORMATTER_YYYY_MM_DD_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMATTER_YYYY_MM_DD_KOR = "yyyy년 M월 d일";
     public static final String TIME_FORMATTER_HH_MM = "HH:mm";
     public static final String TIME_FORMATTER_M_D_E = "M월 d일 E요일";
     public static final String DATE_FORMATTER_YYYY_MM_KOR = "yyyy년 M월";

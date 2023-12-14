@@ -1,6 +1,8 @@
 package kr.jeet.edu.bus.utils;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
@@ -83,7 +85,25 @@ public class Utils {
 
         }
     }
+    /**
+     * 날짜 포맷
+     * */
+    public static String formatDate(String inputDate, String inputFoarmatStr, String outputFormatStr) {
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat(inputFoarmatStr, Locale.KOREA);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputFormatStr, Locale.KOREA);
 
+        try {
+            Date date = inputDateFormat.parse(inputDate);
+            String formattedDate = "";
+            if (date != null) formattedDate = outputFormat.format(date);
+
+            return formattedDate;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
     /**
      * 날짜 포맷 [ yyyy-MM-dd , HH:mm -> M월 d일 (*요일)\n HH시 ss분 ]
      * */
@@ -192,5 +212,23 @@ public class Utils {
         }
 
         return number;
+    }
+    /**
+     * dp값 or px값 가져오기
+     * */
+    public static int fromPxToDp(float px) { return (int) (px / Resources.getSystem().getDisplayMetrics().density); }
+    public static int fromDpToPx(float dp) { return (int) (dp * Resources.getSystem().getDisplayMetrics().density); }
+
+    public static boolean isEmptyContainSpace(CharSequence str) {
+        if(str == null) return true;
+        String trimStr = str.toString().trim();
+        return TextUtils.isEmpty(trimStr);
+    }
+    /**
+     * 가로모드 체크
+     * */
+    public static boolean isLandscapeMode(Context context) {
+        int orientation = context.getResources().getConfiguration().orientation;
+        return orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 }

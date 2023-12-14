@@ -21,7 +21,6 @@ import java.util.List;
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.common.Constants;
 import kr.jeet.edu.bus.model.data.BusInfoData;
-import kr.jeet.edu.bus.utils.PreferenceUtil;
 import kr.jeet.edu.bus.utils.Utils;
 
 public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.ViewHolder>{
@@ -59,7 +58,6 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(position == NO_POSITION) return;
         BusInfoData item = mList.get(position);
-        String startDate = TextUtils.isEmpty(PreferenceUtil.getStartDate(mContext)) ? "출발시간 정보없음" : "출발시간 : " + PreferenceUtil.getStartDate(mContext);
 
         if (TextUtils.isEmpty(item.bcName)){
             holder.tvBcName.setText("");
@@ -74,13 +72,10 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
         if (item.busDriveSeq == Constants.NOT_DRIVING) {
             holder.btnDrive.setOnClickListener(v -> _driveListener.drive(item, position));
             setView(holder.btnDrive, holder.iconDrive, R.drawable.icon_bus_off, R.string.btn_start_drive);
-            holder.tvStartDate.setVisibility(View.INVISIBLE);
 
         } else {
             holder.btnDrive.setOnClickListener(v -> _drivingListener.driving(item, position));
             setView(holder.btnDrive, holder.iconDrive, R.drawable.icon_bus_on, R.string.btn_go_driving);
-            holder.tvStartDate.setText(startDate);
-            holder.tvStartDate.setVisibility(View.VISIBLE);
         }
     }
 
@@ -97,7 +92,7 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView tvBcName, tvBusName, tvPhoneNum, tvStartDate;
+        private TextView tvBcName, tvBusName, tvPhoneNum;
         private AppCompatButton btnDrive;
         private ImageView iconDrive;
 
@@ -107,7 +102,6 @@ public class BusInfoListAdapter extends RecyclerView.Adapter<BusInfoListAdapter.
             tvBcName = itemView.findViewById(R.id.tv_bc_name);
             tvBusName = itemView.findViewById(R.id.tv_bus_name);
             tvPhoneNum = itemView.findViewById(R.id.tv_phone_number);
-            tvStartDate = itemView.findViewById(R.id.tv_start_date);
             btnDrive = itemView.findViewById(R.id.btn_start_drive);
             iconDrive = itemView.findViewById(R.id.icon_drive);
         }

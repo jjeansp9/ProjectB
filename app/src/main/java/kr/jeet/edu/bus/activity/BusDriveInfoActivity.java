@@ -1,5 +1,6 @@
 package kr.jeet.edu.bus.activity;
 
+import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -7,6 +8,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,16 +18,22 @@ import android.widget.Toast;
 import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.adapter.BusRouteListAdapter;
 import kr.jeet.edu.bus.common.Constants;
 import kr.jeet.edu.bus.common.DataManager;
 import kr.jeet.edu.bus.common.IntentParams;
+import kr.jeet.edu.bus.model.data.BusDriveHistoryData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.model.data.BusRouteData;
 import kr.jeet.edu.bus.model.response.BaseResponse;
+import kr.jeet.edu.bus.model.response.BusDriveHistoryResponse;
 import kr.jeet.edu.bus.model.response.BusInfoResponse;
 import kr.jeet.edu.bus.model.response.BusRouteResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
@@ -72,7 +81,15 @@ public class BusDriveInfoActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        requestBusInfo(); // api 호출했을 때 운행이 종료된 경우, finish()
+        requestBusInfo();
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if(mInfo != null) {
+            requestBusesList(mInfo);
+        }
     }
 
     @Override
@@ -121,8 +138,6 @@ public class BusDriveInfoActivity extends BaseActivity {
         mTvListEmpty = findViewById(R.id.tv_route_list_empty);
         mTvBcName = findViewById(R.id.tv_bc_name);
         mTvBusPhone = findViewById(R.id.tv_bus_phone);
-        mTvBusStartDate = findViewById(R.id.tv_start_date);
-
         appbar = findViewById(R.id.appbar);
 
         String str = "";
@@ -133,11 +148,11 @@ public class BusDriveInfoActivity extends BaseActivity {
         str = TextUtils.isEmpty(mInfo.busPhoneNumber) ? "(정보 없음)" : Utils.formatNum(mInfo.busPhoneNumber.replace("-", ""));
         mTvBusPhone.setText(str);
 
-//        str = TextUtils.isEmpty(PreferenceUtil.getStartDate(mContext)) ? "(정보 없음)" : PreferenceUtil.getStartDate(mContext);
-//        mTvBusStartDate.setText(str == null ? "(정보 없음)" : str);
-
         setRecycler();
-        requestRouteList();
+        if(mInfo != null) {
+            requestBusDriveHistory(mInfo);
+        }
+        LogMgr.e(TAG, "mInfo = " + mInfo.startDate);
     }
 
     private void setRecycler(){
@@ -162,7 +177,30 @@ public class BusDriveInfoActivity extends BaseActivity {
             Toast.makeText(mContext, R.string.bus_route_impossible_click, Toast.LENGTH_SHORT).show();
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(mInfo != null) {
+            if(TextUtils.isEmpty(mInfo.busFile1) && TextUtils.isEmpty(mInfo.busFile2)) return true;
+            getMenuInflater().inflate(R.menu.menu_timetable, menu);
+        }
+        return (super.onCreateOptionsMenu(menu));
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_timetable:
+                ArrayList<String> items = new ArrayList<>();
+                if(!Utils.isEmptyContainSpace(mInfo.busFile1)) items.add(mInfo.busFile1);
+                if(!Utils.isEmptyContainSpace(mInfo.busFile2)) items.add(mInfo.busFile2);
+                Intent photoIntent = new Intent(BusDriveInfoActivity.this, PhotoViewActivity.class);
+                photoIntent.putStringArrayListExtra(IntentParams.PARAM_WEB_DETAIL_IMG, items);
+                photoIntent.putExtra(IntentParams.PARAM_WEB_DETAIL_IMG_POSITION, 0);
+                startActivity(photoIntent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onClick(View v) {
         super.onClick(v);
@@ -185,8 +223,15 @@ public class BusDriveInfoActivity extends BaseActivity {
                     if(response.isSuccessful()) {
                         if(response.body() != null) {
                             if (mList!=null && mList.size() > 0) mList.clear();
-
+                            LogMgr.e(TAG, "mInfo startDate = " + mInfo.startDate);
                             if (response.body().data != null){
+                                BusRouteData startData = null;
+                                startData = new BusRouteData();
+                                startData.bpName = getString(R.string.title_bus_start);
+                                startData.isArrive = "Y";
+                                startData.startDate = mInfo.startDate;
+                                startData.setClickable = true;
+                                startData.isSuccess = true;
                                 List<BusRouteData> getData = response.body().data;
                                 if (getData.size() > 0){
 
@@ -197,7 +242,8 @@ public class BusDriveInfoActivity extends BaseActivity {
                                                     getData.get(i+1).setClickable = true;
                                                     break;
 
-                                                }else if (i == 0){
+                                                }
+                                                else if (i == 0){
                                                     getData.get(i).setClickable = true;
                                                 }
                                             }
@@ -208,7 +254,7 @@ public class BusDriveInfoActivity extends BaseActivity {
                                                 data.isSuccess = true;
                                             }
                                         }
-
+                                        mList.add(startData);
                                         if (mList != null) mList.addAll(getData);
                                     }catch (Exception e) {
                                         Toast.makeText(mContext, R.string.server_data_empty, Toast.LENGTH_SHORT).show();
@@ -388,7 +434,80 @@ public class BusDriveInfoActivity extends BaseActivity {
             return;
         });
     }
+    //버스 목록 조회 (등/하원 시간표 용)
+    private void requestBusesList(BusInfoData item){
+        if (RetrofitClient.getInstance() != null) {
+            RetrofitClient.getApiInterface().getBusesInfo(item.bcName, item.busCode).enqueue(new Callback<BusInfoResponse>() {
+                @Override
+                public void onResponse(Call<BusInfoResponse> call, Response<BusInfoResponse> response) {
+                    try {
+                        if (response.isSuccessful()) {
+                            if (response.body() != null) {
 
+                                List<BusInfoData> list = response.body().data;
+                                if (list != null && !list.isEmpty()) {
+                                    BusInfoData data = list.get(0);
+                                    item.busFile1 = data.busFile1;
+                                    item.busFile2 = data.busFile2;
+                                }
+                            }
+                        } else {
+
+                        }
+                    } catch (Exception e) {
+                        LogMgr.e(TAG + "requestTestReserveList() Exception : ", e.getMessage());
+                    }finally{
+                        invalidateOptionsMenu();
+                    }
+
+
+                }
+
+                @Override
+                public void onFailure(Call<BusInfoResponse> call, Throwable t) {
+                    invalidateOptionsMenu();
+                }
+            });
+        }
+    }
+    // 버스 운행이력조회 (출발시간용)
+    private void requestBusDriveHistory(BusInfoData data){
+        if(RetrofitClient.getInstance() != null) {
+            RetrofitClient.getApiInterface().getBusDriveHistory(data.bcName, data.busCode).enqueue(new Callback<BusDriveHistoryResponse>() {
+                @Override
+                public void onResponse(Call<BusDriveHistoryResponse> call, Response<BusDriveHistoryResponse> response) {
+                    try {
+                        if (response.isSuccessful()) {
+                            if (response.body() != null) {
+
+                                BusDriveHistoryData getData = response.body().data;
+                                if (getData != null) {
+                                    //운행중?
+                                    LogMgr.e(TAG, "isDrive = " + getData.isDrive + " /startDate=" + getData.startDate);
+                                    data.isDrive = getData.isDrive;
+
+                                    if (getData.isDrive.equals("Y")) {
+                                        data.startDate = getData.startDate;
+                                    }
+                                }
+                            }
+
+                        }
+                    }catch(Exception ex) {}
+                    finally {
+                        requestRouteList();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BusDriveHistoryResponse> call, Throwable t) {
+                    LogMgr.e(TAG, "request() onFailure >> " + t.getMessage());
+                    requestRouteList();
+                }
+            });
+        }
+
+    }
     // 버스정보 조회
     private void requestBusInfo(){
 
@@ -406,7 +525,7 @@ public class BusDriveInfoActivity extends BaseActivity {
                             if (getDataList != null && !getDataList.isEmpty()){
                                 
                                 for (int i = 0; i < getDataList.size(); i++) {
-                                    if (i == _position) { // 해당 버스정보의 position이 busDriveSeq가 0이면 운행 종료된 경우임
+                                    if (i == _position) {
                                         if (getDataList.get(i).busDriveSeq == Constants.NOT_DRIVING) {
                                             finish();
                                             Toast.makeText(mContext, R.string.bus_route_already_end, Toast.LENGTH_SHORT).show();
