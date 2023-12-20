@@ -1,6 +1,7 @@
 package kr.jeet.edu.bus.server;
 
 import kr.jeet.edu.bus.model.request.BusDriveRequest;
+import kr.jeet.edu.bus.model.request.SmsRequest;
 import kr.jeet.edu.bus.model.response.AnnouncementListResponse;
 import kr.jeet.edu.bus.model.response.BaseResponse;
 import kr.jeet.edu.bus.model.response.BoardDetailResponse;
@@ -26,10 +27,11 @@ public interface RetrofitApi {
 
     //public final static String SERVER_BASE_URL = "http://192.168.2.51:7777/";   //kyt local
     //public final static String SERVER_BASE_URL = "http://192.168.2.55:7777/";   //pjh local
+    public final static String SERVER_BASE_URL = "http://192.168.2.83:7777/";   //jwj local
     //public final static String SERVER_BASE_URL = "http://192.168.2.77:7777/";  //khj local
     //public final static String SERVER_BASE_URL = "http://211.252.86.237:7777/"; // cloud local
-    public final static String SERVER_BASE_URL = "http://211.252.86.6:7777/"; // 신규 cloud local
-
+    //public final static String SERVER_BASE_URL = "http://211.252.86.6/"; // 신규 cloud local
+    //public final static String SERVER_BASE_URL = "https://www.jeetapp.kr/"; // domain
     public final static String PREFIX = "mobile/api/";
     public final static String FILE_SUFFIX_URL = SERVER_BASE_URL + "attachFile/";
 
@@ -97,5 +99,8 @@ public interface RetrofitApi {
     @PATCH("bus/busStop")
     Call<BaseResponse> getBusStop(@Query("busDriveSeq") int busDriveSeq, @Query("bpCode") String bpCode, @Query("isDrive") String isDrive);
 
+    // SMS 전송
+    @POST("sms")
+    Call<BaseResponse> sendSms(@Body SmsRequest request);
 
 }

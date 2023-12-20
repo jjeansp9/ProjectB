@@ -33,6 +33,16 @@ import kr.jeet.edu.bus.view.CustomAppbarLayout;
 import kr.jeet.edu.bus.view.DrawableAlwaysCrossFadeFactory;
 
 public class Utils {
+
+    /**
+     * 6자리 난수 생성
+     */
+    public static int generateAuthNum() {
+        //return ThreadLocalRandom.current().nextInt(100000, 1000000);
+        java.util.Random generator = new java.util.Random();
+        generator.setSeed(System.currentTimeMillis());
+        return generator.nextInt(1000000) % 1000000;
+    }
     /**
      * 파라미터로 받은 editText의 개수만큼 focus 얻어오고 키보드를 내리는 메소드
      * */

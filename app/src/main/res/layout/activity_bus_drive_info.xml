@@ -107,31 +107,6 @@
                         android:textSize="@dimen/font_size_large"
                         android:textColor="@color/font_color_default" />
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_bus_start_date_sub"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/tv_bus_phone"-->
-<!--                        app:layout_constraintEnd_toStartOf="@id/guideline_left"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        android:layout_marginTop="8dp"-->
-<!--                        android:text="출발시간"-->
-<!--                        android:textStyle="bold"-->
-<!--                        android:textColor="@color/font_color_bc"-->
-<!--                        android:textSize="@dimen/font_size_large"/>-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_start_date"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        app:layout_constraintTop_toTopOf="@id/tv_bus_start_date_sub"-->
-<!--                        app:layout_constraintStart_toStartOf="@id/guideline_left"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        android:layout_marginStart="4dp"-->
-<!--                        android:layout_marginEnd="4dp"-->
-<!--                        android:textSize="@dimen/font_size_large"-->
-<!--                        android:textColor="@color/font_color_default" />-->
-
                     <TextView
                         android:id="@+id/tv_bus_caution"
                         android:layout_width="0dp"

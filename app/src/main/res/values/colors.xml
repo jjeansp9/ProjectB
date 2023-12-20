@@ -62,6 +62,9 @@
     <color name="btn_sel">#000000</color>
     <color name="btn_white_nor">#ffffff</color>
     <color name="btn_white_sel">#E8E8E8</color>
+
+    <drawable name="color_enable">#e51b23</drawable>
+    <drawable name="color_disable">#cccccc</drawable>
 <!--    <color name="btn_nor">#013fa6</color>-->
 <!--    <color name="btn_sel">#062e6f</color>-->
 </resources>

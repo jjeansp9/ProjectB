@@ -42,7 +42,7 @@
     <string name="bus_info_empty">운행정보가 없습니다</string>
     <string name="announcement_list_empty">공지사항 목록에 글이 없습니다</string>
     <string name="title_bus_start">출발</string>
-    <string name="btn_title_bus_timetable">등/하원 시간표</string>
+    <string name="btn_title_bus_timetable">승/하차 시간표</string>
     <string name="item_total">전체</string>
 
     <string name="error_msg_fail_to_save"> 다운로드된 파일을 저장에 실패하였습니다.</string>
@@ -222,7 +222,19 @@
     <string name="accessibility_description">접근성 권한을 필요로 합니다!.</string>
 
     <string name="msg_backbutton_to_exit">뒤로 버튼을 한번 더 누르면 종료됩니다.</string>
-
     <string name="msg_inappupdate_fail">앱 업데이트가 정상적으로 완료되지 않았습니다.</string>
 
+    <string name="phonenumber">휴대폰번호</string>
+    <string name="auth_request">인증요청</string>
+    <string name="input_auth_number">인증번호 입력</string>
+    <string name="auth_complete">인증이 완료되었습니다.</string>
+    <string name="auth_incomplete">인증이 완료되지 않았습니다. 앱을 재시작하여 인증을 완료해 주세요.</string>
+    <string name="auth_incomplete2">인증이 완료되지 않았습니다. 앱 사용을 위해 인증을 완료해 주세요.</string>
+    <string name="timeout">시간초과</string>
+    <string name="empty_info">정보가 없습니다.</string>
+    <string name="empty_phonenumber">휴대폰번호 정보가 없습니다.</string>
+    <string name="msg_re_auth">휴대폰번호를 다시 인증해 주세요.</string>
+    <string name="auth_number_msg">[지트에듀케이션] 인증번호는 [%d] 입니다.</string>
+    <string name="check_auth_number">인증번호 시간이 초과 되었거나 정보가 일치하지 않습니다.</string>
+    <string name="msg_auth_description">• 로그인 시 휴대폰 인증을 진행합니다.\n자동로그인을 체크하면 다시 인증을 받지 않아도 됩니다.</string>
 </resources>

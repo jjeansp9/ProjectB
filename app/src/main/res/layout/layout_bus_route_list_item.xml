@@ -98,7 +98,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_icon_bus"
         app:layout_constraintEnd_toStartOf="@+id/cb_arrive"/>
-
     <CheckBox
         android:id="@+id/cb_arrive"
         android:layout_width="60dp"

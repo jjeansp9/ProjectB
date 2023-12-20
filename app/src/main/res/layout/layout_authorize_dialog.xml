@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:id="@+id/dialog_ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_dialog_layout"
+        android:layout_centerInParent="true"
+        android:clipToOutline="true"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:id="@+id/title_ly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/layout_margin_small"
+                android:background="@color/popup_title_bg"
+                >
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="title"
+                    android:gravity="center"
+                    android:textColor="@color/font_color_default"
+                    android:textSize="@dimen/font_size_large"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="80dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/layout_margin_small"
+                android:paddingBottom="@dimen/layout_margin_small"
+                android:gravity="center_vertical"
+                android:animateLayoutChanges="true"
+                >
+
+
+                <kr.jeet.edu.bus.view.AuthPhoneNumberView
+                    android:id="@+id/auth_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tv_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=""
+                    android:textColor="@color/red_sub"
+                    android:textSize="@dimen/font_size_small"
+                    android:layout_marginTop="4dp"
+                    android:visibility="visible"/>
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=""
+                    android:text="@string/msg_auth_description"
+                    android:textColor="@color/font_color_999"
+                    android:textSize="@dimen/font_size_small"
+                    android:layout_marginTop="@dimen/layout_margin_xsmall"
+                    android:visibility="visible"/>
+                <LinearLayout
+                    android:id="@+id/layout_autologin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/layout_margin_xsmall"
+                    android:stateListAnimator="@xml/animate_button_push">
+                    <CheckBox
+                        android:id="@+id/check_autologin"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@drawable/selector_bt_agree"
+                        android:button="@null"
+                        android:checked="false"
+                        android:clickable="false"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/auto_login"
+                        android:textSize="@dimen/font_size"
+                        android:textColor="@color/font_color_default"
+                        android:maxLines="1"
+                        android:layout_marginHorizontal="@dimen/layout_margin_xxxsmall"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/popup_line"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <!--            <android.widget.Button-->
+            <!--                android:id="@+id/cancelBtn"-->
+            <!--                android:layout_width="0dp"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:padding="16dp"-->
+            <!--                android:gravity="center"-->
+            <!--                android:background="@color/white"-->
+            <!--                android:stateListAnimator="@xml/animate_button_push"-->
+            <!--                android:layout_marginRight="1dp"-->
+            <!--                android:text="@string/cancel"-->
+            <!--                android:textColor="@color/font_color_default"-->
+            <!--                android:textSize="@dimen/font_size_large"-->
+            <!--                />-->
+
+            <RelativeLayout
+                android:id="@+id/cancelBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_bt_white">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:stateListAnimator="@xml/animate_button_push"
+                    android:text="@string/cancel"
+                    android:textColor="@color/font_color_default"
+                    android:textSize="@dimen/font_size_large" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/okBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_bt_black">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:stateListAnimator="@xml/animate_button_push"
+                    android:text="@string/ok"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_size_large" />
+            </RelativeLayout>
+
+
+
+            <!--            <android.widget.Button-->
+            <!--                android:id="@+id/okBtn"-->
+            <!--                android:layout_width="0dp"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:padding="16dp"-->
+            <!--                android:gravity="center"-->
+            <!--                android:background="@color/red"-->
+            <!--                android:stateListAnimator="@xml/animate_button_push"-->
+            <!--                android:text="@string/ok"-->
+            <!--                android:textColor="@color/white"-->
+            <!--                android:textSize="@dimen/font_size_large"-->
+            <!--                />-->
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

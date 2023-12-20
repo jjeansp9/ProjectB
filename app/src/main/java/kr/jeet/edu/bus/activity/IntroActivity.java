@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.common.DataManager;
+import kr.jeet.edu.bus.dialog.AuthorizeDialog;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.model.response.BusInfoResponse;
 import kr.jeet.edu.bus.server.RetrofitApi;
@@ -44,7 +46,29 @@ public class IntroActivity extends BaseActivity {
 
     private AppUpdateManager appUpdateManager = null;
     private final int REQUEST_INAPP_UPDATE = 1000;
-
+    AuthorizeDialog _authDialog;
+    View.OnClickListener okListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if(_authDialog.checkValid()) {
+                _authDialog.dismiss();
+                PreferenceUtil.setPrefIsAuthorized(mContext, true);
+                if(_authDialog.getCheckedAutoLogin() != PreferenceUtil.getAutoLogin(mContext)) {
+                    PreferenceUtil.setAutoLogin(mContext, _authDialog.getCheckedAutoLogin());
+                }
+                startMain();
+            }else{
+                _authDialog.setError();
+            }
+        }
+    };
+    View.OnClickListener cancelListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            _authDialog.dismiss();
+            mHandler.sendEmptyMessage(HANDLER_REQUEST_LOGIN);
+        }
+    };
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -173,11 +197,12 @@ public class IntroActivity extends BaseActivity {
 
                                 DataManager.getInstance().setbusInfoList(getDataList);
                                 PreferenceUtil.setPhoneNumber(mContext, phoneNum);
-                                startMain();
+                                checkAuthorize();
                             }
                         }
                     } else {
                         PreferenceUtil.setPhoneNumber(mContext, "");
+                        PreferenceUtil.setPrefIsAuthorized(mContext, false);
                         startLogin();
                     }
 
@@ -207,6 +232,23 @@ public class IntroActivity extends BaseActivity {
                 Toast.makeText(mContext, R.string.msg_inappupdate_fail, Toast.LENGTH_SHORT).show();
                 finishAffinity(); // 앱 종료
             }
+        }
+    }
+    private void checkAuthorize() {
+        if(PreferenceUtil.getIsAuthorized(mContext)) {
+            startMain();
+        }else{
+            if(_authDialog != null && _authDialog.isShowing()) {
+                _authDialog.dismiss();
+            }
+            _authDialog = new AuthorizeDialog(mContext);
+            _authDialog.setTitle(getString(R.string.auth_request));
+            _authDialog.setOnOkButtonClickListener(okListener);
+            _authDialog.setOnCancelButtonClickListener(cancelListener);
+            _authDialog.setEnabledOkButton(false);
+            _authDialog.show();
+            _authDialog.setPhoneNumber(PreferenceUtil.getPhoneNumber(mContext));
+//            _authDialog.setPhoneNumber("01046332026");
         }
     }
 }

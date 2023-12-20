@@ -12,6 +12,7 @@ public class PreferenceUtil {
     public static final String PREF_BUS_CODE = "bus_code"; // 버스 코드
     public static final String PREF_PHONE_NUMBER = "phone_number"; // 기사(동승자) 휴대폰번호
     public static final String PREF_COMPARE_PHONE_NUMBER = "compare_phone_number"; // 로그인 번호 비교
+    public static final String PREF_IS_AUTHORIZED = "is_authorized"; // 로그인 시 번호 인증됨
 
     public static final String PREF_DRIVE_SEQ = "drive_seq"; // 버스 운행 seq
 
@@ -89,5 +90,15 @@ public class PreferenceUtil {
     public static int getDriveSeq(Context context) {
         SharedPreferences pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return pref.getInt(PREF_DRIVE_SEQ, 0);
+    }
+
+    //is Authorized
+    public static void setPrefIsAuthorized(Context context, boolean isAuthorized){
+        SharedPreferences pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        pref.edit().putBoolean(PREF_IS_AUTHORIZED, isAuthorized).apply();
+    }
+    public static boolean getIsAuthorized(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return pref.getBoolean(PREF_IS_AUTHORIZED, false);
     }
 }

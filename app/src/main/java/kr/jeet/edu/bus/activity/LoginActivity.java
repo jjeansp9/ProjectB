@@ -15,6 +15,7 @@ import java.util.List;
 
 import kr.jeet.edu.bus.R;
 import kr.jeet.edu.bus.common.DataManager;
+import kr.jeet.edu.bus.dialog.AuthorizeDialog;
 import kr.jeet.edu.bus.model.data.ACAData;
 import kr.jeet.edu.bus.model.data.BusInfoData;
 import kr.jeet.edu.bus.model.response.BusInfoResponse;
@@ -34,7 +35,29 @@ public class LoginActivity extends BaseActivity {
 
     private EditText mEditPhoneNum;
     private CheckBox mAutoLoginCb;
-
+    AuthorizeDialog _authDialog;
+    View.OnClickListener okListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if(_authDialog.checkValid()) {
+                _authDialog.dismiss();
+                PreferenceUtil.setPrefIsAuthorized(mContext, true);
+                if(_authDialog.getCheckedAutoLogin() != PreferenceUtil.getAutoLogin(mContext)) {
+                    PreferenceUtil.setAutoLogin(mContext, _authDialog.getCheckedAutoLogin());
+                }
+                startMain();
+            }else{
+                _authDialog.setError();
+            }
+        }
+    };
+    View.OnClickListener cancelListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            _authDialog.dismiss();
+            Toast.makeText(mContext, R.string.auth_incomplete2, Toast.LENGTH_SHORT).show();
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +93,8 @@ public class LoginActivity extends BaseActivity {
                 break;
 
             case R.id.btn_login:
-                if (mAutoLoginCb.isChecked()) PreferenceUtil.setAutoLogin(mContext, true);
-                else PreferenceUtil.setAutoLogin(mContext, false);
-
+                if (mAutoLoginCb != null) PreferenceUtil.setAutoLogin(mContext, mAutoLoginCb.isChecked());
+                PreferenceUtil.setPrefIsAuthorized(mContext, false);
                 if (checkLogin()) requestLogin();
                 break;
         }
@@ -95,12 +117,12 @@ public class LoginActivity extends BaseActivity {
 
                                 DataManager.getInstance().setbusInfoList(getDataList);
                                 PreferenceUtil.setPhoneNumber(mContext, phoneNum);
-                                startMain();
+                                checkAuthorize();
                             }
                         }
                     } else {
                         PreferenceUtil.setPhoneNumber(mContext, "");
-
+                        PreferenceUtil.setPrefIsAuthorized(mContext, false);
                         if (response.code() == RetrofitApi.RESPONSE_CODE_BINDING_ERROR){
                             Toast.makeText(mContext, R.string.write_phone_impossible, Toast.LENGTH_SHORT).show();
 
@@ -133,7 +155,23 @@ public class LoginActivity extends BaseActivity {
             return true;
         }
     }
-
+    private void checkAuthorize() {
+        if(PreferenceUtil.getIsAuthorized(mContext)) {
+            startMain();
+        }else{
+            if(_authDialog != null && _authDialog.isShowing()) {
+                _authDialog.dismiss();
+            }
+            _authDialog = new AuthorizeDialog(mContext);
+            _authDialog.setTitle(getString(R.string.auth_request));
+            _authDialog.setOnOkButtonClickListener(okListener);
+            _authDialog.setOnCancelButtonClickListener(cancelListener);
+            _authDialog.setEnabledOkButton(false);
+            _authDialog.show();
+            _authDialog.setPhoneNumber(PreferenceUtil.getPhoneNumber(mContext));
+//            _authDialog.setPhoneNumber("01046332026");
+        }
+    }
     private void startMain(){
         startActivity(new Intent(mContext, MainActivity.class));
         finish();
