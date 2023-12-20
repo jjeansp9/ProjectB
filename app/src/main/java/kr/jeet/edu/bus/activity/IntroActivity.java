@@ -182,8 +182,6 @@ public class IntroActivity extends BaseActivity {
 
     private void requestLogin(){
 
-        showProgressDialog();
-
         String phoneNum = PreferenceUtil.getPhoneNumber(mContext);
 
         if(RetrofitClient.getInstance() != null) {

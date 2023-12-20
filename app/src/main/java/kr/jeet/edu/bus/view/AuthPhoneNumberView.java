@@ -212,8 +212,6 @@ public class AuthPhoneNumberView extends LinearLayout implements View.OnClickLis
         request.msg = _context.getString(R.string.auth_number_msg, mAuthNum);
         mAuthCompletedPhoneNo = mAuthPhoneNo;
         request.receiver = mAuthPhoneNo;
-//        mAuthCompletedPhoneNo = mAuthPhoneNo;
-//        request.receiver = mAuthPhoneNo;
         request.sender = "@";   //대표번호
         request.senderCode = Constants.SMS_SENDER_CODE;
         request.receiverCode = Constants.SMS_RECEIVER_CODE;
